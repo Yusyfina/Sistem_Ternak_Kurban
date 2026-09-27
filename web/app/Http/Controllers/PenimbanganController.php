@@ -6,6 +6,8 @@ use App\Models\Penimbangan;
 use App\Models\Ternak;
 use Illuminate\Http\Request;
 
+
+
 class PenimbanganController extends Controller
 {
     /**
