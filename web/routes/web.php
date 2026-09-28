@@ -156,6 +156,16 @@ Route::middleware(['auth'])->group(function () {
             PengaturanController::class,
             'index'
         ])->name('pengaturan.index');
+
+        Route::post('/pengaturan/kategori', [
+            PengaturanController::class,
+            'storeKategori'
+        ])->name('pengaturan.kategori.store');
+
+        Route::post('/pengaturan/jenis', [
+            PengaturanController::class,
+            'storeJenis'
+        ])->name('pengaturan.jenis.store');
     });
 });
 

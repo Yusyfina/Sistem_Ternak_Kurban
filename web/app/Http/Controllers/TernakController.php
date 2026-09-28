@@ -17,12 +17,17 @@ class TernakController extends Controller
     {
         $ternak = Ternak::with([
             'jenisTernak',
-            'lokasi'
+            'lokasi',
         ])
             ->latest()
             ->paginate(10);
 
-        return view('ternak.index', compact('ternak'));
+        $lokasi = LokasiPeternakan::orderBy('nama')->get();
+
+        return view('ternak.index', compact(
+            'ternak',
+            'lokasi'
+        ));
     }
 
     /**

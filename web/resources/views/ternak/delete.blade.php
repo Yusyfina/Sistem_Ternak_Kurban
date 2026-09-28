@@ -1,147 +1,62 @@
 @extends('layouts.ternak')
 
+@section('title', 'Hapus Ternak')
+@section('page-title', 'Hapus Ternak')
+
 @section('content')
 
-<div class="mb-6">
+<div class="mx-auto max-w-2xl">
 
-    <h1 class="text-2xl font-bold text-gray-800">
-        Hapus Data Ternak
-    </h1>
+    {{-- HEADER --}}
+    <div class="mb-6">
 
-    <p class="text-gray-500 mt-1">
-        Konfirmasi penghapusan data ternak.
-    </p>
+        <h1 class="text-2xl font-bold text-gray-900">
+            Hapus Data Ternak
+        </h1>
 
-</div>
+        <p class="mt-1 text-sm text-gray-500">
+            Konfirmasi sebelum menghapus data ternak.
+        </p>
+
+    </div>
 
 
-<div class="max-w-2xl">
-
-    <div class="bg-white rounded-lg shadow-sm">
-
+    {{-- CARD --}}
+    <div class="overflow-hidden rounded-xl border border-gray-200
+                bg-white shadow-sm">
 
         {{-- HEADER --}}
-        <div class="p-6 border-b">
+        <div class="border-b border-red-100 bg-red-50 px-6 py-5">
 
-            <h2 class="text-lg font-semibold text-red-600">
-                Konfirmasi Hapus
-            </h2>
+            <div class="flex gap-3">
 
-            <p class="text-sm text-gray-500 mt-1">
-                Periksa data berikut sebelum menghapus.
-            </p>
+                <div class="flex h-10 w-10 shrink-0 items-center
+                            justify-center rounded-full bg-red-100">
 
-        </div>
+                    <svg xmlns="http://www.w3.org/2000/svg"
+                         class="h-5 w-5 text-red-600"
+                         fill="none"
+                         viewBox="0 0 24 24"
+                         stroke="currentColor"
+                         stroke-width="2">
 
+                        <path stroke-linecap="round"
+                              stroke-linejoin="round"
+                              d="M12 9v4m0 4h.01M10.29 3.86l-7.82 13.5A2 2 0 004.2 20h15.6a2 2 0 001.73-2.64l-7.82-13.5a2 2 0 00-3.42 0z" />
 
-        {{-- INFORMASI --}}
-        <div class="p-6">
-
-            <div class="bg-red-50 border border-red-200 rounded-lg p-4 mb-6">
-
-                <p class="text-sm text-red-700">
-                    Apakah kamu yakin ingin menghapus data ternak ini?
-                </p>
-
-                <p class="text-sm text-red-600 mt-1">
-                    Data yang sudah dihapus tidak dapat dikembalikan.
-                </p>
-
-            </div>
-
-
-            <div class="space-y-4">
-
-                {{-- KODE --}}
-                <div class="flex justify-between border-b pb-3">
-
-                    <span class="text-gray-500">
-                        Kode Ternak
-                    </span>
-
-                    <span class="font-semibold text-gray-800">
-                        {{ $ternak->kode_ternak }}
-                    </span>
+                    </svg>
 
                 </div>
 
+                <div>
 
-                {{-- JENIS --}}
-                <div class="flex justify-between border-b pb-3">
+                    <h2 class="font-semibold text-red-800">
+                        Konfirmasi Hapus
+                    </h2>
 
-                    <span class="text-gray-500">
-                        Jenis Ternak
-                    </span>
-
-                    <span class="font-semibold text-gray-800">
-                        {{ $ternak->jenisTernak->nama_jenis ?? '-' }}
-                    </span>
-
-                </div>
-
-
-                {{-- LOKASI --}}
-                <div class="flex justify-between border-b pb-3">
-
-                    <span class="text-gray-500">
-                        Lokasi
-                    </span>
-
-                    <span class="font-semibold text-gray-800">
-                        {{ $ternak->lokasi->nama ?? '-' }}
-                    </span>
-
-                </div>
-
-
-                {{-- RFID --}}
-                <div class="flex justify-between border-b pb-3">
-
-                    <span class="text-gray-500">
-                        Kode RFID
-                    </span>
-
-                    <span class="font-semibold text-gray-800">
-                        {{ $ternak->kode_rfid ?? '-' }}
-                    </span>
-
-                </div>
-
-
-                {{-- BOBOT --}}
-                <div class="flex justify-between border-b pb-3">
-
-                    <span class="text-gray-500">
-                        Bobot Terakhir
-                    </span>
-
-                    <span class="font-semibold text-gray-800">
-
-                        @if ($ternak->bobot_terakhir !== null)
-
-                            {{ $ternak->bobot_terakhir }} kg
-
-                        @else
-
-                            -
-
-                        @endif
-
-                    </span>
-
-                </div>
-
-
-                {{-- STATUS --}}
-                <div class="flex justify-between">
-
-                    <span class="text-gray-500">
-                        Status
-                    </span>
-
-                    <span class="font-semibold text-gray-800">
-                        {{ ucfirst($ternak->status) }}
-                    </span>
+                    <p class="mt-1 text-sm text-red-700">
+                        Apakah kamu yakin ingin menghapus data ternak ini?
+                    </p>
 
                 </div>
 
@@ -150,31 +65,137 @@
         </div>
 
 
-        {{-- BUTTON --}}
-        <div class="px-6 py-4 bg-gray-50 border-t flex justify-end gap-3">
+        {{-- DATA --}}
+        <div class="space-y-5 px-6 py-6">
 
-            <a
-                href="{{ route('ternak.index') }}"
-                class="px-5 py-2.5 bg-gray-200 text-gray-700 rounded-lg hover:bg-gray-300"
-            >
+            <div class="flex items-center justify-between
+                        border-b border-gray-100 pb-4">
+
+                <span class="text-sm text-gray-500">
+                    Kode Ternak
+                </span>
+
+                <span class="text-sm font-semibold text-gray-900">
+                    {{ $ternak->kode_ternak }}
+                </span>
+
+            </div>
+
+
+            <div class="flex items-center justify-between
+                        border-b border-gray-100 pb-4">
+
+                <span class="text-sm text-gray-500">
+                    Jenis Ternak
+                </span>
+
+                <span class="text-sm font-semibold text-gray-900">
+                    {{ $ternak->jenisTernak->nama_jenis ?? '-' }}
+                </span>
+
+            </div>
+
+
+            <div class="flex items-center justify-between
+                        border-b border-gray-100 pb-4">
+
+                <span class="text-sm text-gray-500">
+                    Lokasi
+                </span>
+
+                <span class="text-sm font-semibold text-gray-900">
+                    {{ $ternak->lokasi->nama ?? '-' }}
+                </span>
+
+            </div>
+
+
+            <div class="flex items-center justify-between
+                        border-b border-gray-100 pb-4">
+
+                <span class="text-sm text-gray-500">
+                    Kode RFID
+                </span>
+
+                <span class="font-mono text-sm font-semibold text-gray-900">
+                    {{ $ternak->kode_rfid ?? '-' }}
+                </span>
+
+            </div>
+
+
+            <div class="flex items-center justify-between
+                        border-b border-gray-100 pb-4">
+
+                <span class="text-sm text-gray-500">
+                    Bobot Terakhir
+                </span>
+
+                <span class="text-sm font-semibold text-gray-900">
+
+                    @if($ternak->bobot_terakhir !== null)
+
+                        {{ number_format($ternak->bobot_terakhir, 1, ',', '.') }}
+                        kg
+
+                    @else
+
+                        -
+
+                    @endif
+
+                </span>
+
+            </div>
+
+
+            <div class="flex items-center justify-between">
+
+                <span class="text-sm text-gray-500">
+                    Status
+                </span>
+
+                <span class="text-sm font-semibold capitalize text-gray-900">
+                    {{ str_replace('_', ' ', $ternak->status) }}
+                </span>
+
+            </div>
+
+        </div>
+
+
+        {{-- FOOTER --}}
+        <div class="flex flex-col-reverse gap-3 border-t border-gray-200
+                    bg-gray-50 px-6 py-4 sm:flex-row sm:justify-end">
+
+            <a href="{{ route('ternak.show', $ternak) }}"
+               class="inline-flex items-center justify-center rounded-lg
+                      border border-gray-300 bg-white px-5 py-2.5
+                      text-sm font-semibold text-gray-700
+                      transition hover:bg-gray-50">
+
                 Batal
+
             </a>
 
 
-            <form
-                action="{{ route('ternak.destroy', $ternak) }}"
-                method="POST"
-            >
+            <form action="{{ route('ternak.destroy', $ternak) }}"
+                  method="POST">
 
                 @csrf
-
                 @method('DELETE')
 
                 <button
                     type="submit"
-                    class="px-5 py-2.5 bg-red-600 text-white rounded-lg hover:bg-red-700"
+                    class="w-full rounded-lg bg-red-600 px-5 py-2.5
+                           text-sm font-semibold text-white
+                           transition hover:bg-red-700
+                           sm:w-auto"
+                    onclick="return confirm('Yakin ingin menghapus {{ $ternak->kode_ternak }}?')"
                 >
+
                     Ya, Hapus Ternak
+
                 </button>
 
             </form>

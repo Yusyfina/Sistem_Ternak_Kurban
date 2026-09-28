@@ -1,304 +1,400 @@
 @extends('layouts.ternak')
 
+@section('title', 'Tambah Ternak')
+@section('page-title', 'Tambah Ternak')
+
 @section('content')
 
-<div class="mb-6">
-    <h1 class="text-2xl font-bold text-gray-800">
-        Tambah Ternak
-    </h1>
+<div class="mx-auto max-w-5xl space-y-6">
 
-    <p class="text-gray-500 mt-1">
-        Tambahkan data ternak baru ke dalam sistem.
-    </p>
-</div>
+    {{-- HEADER --}}
+    <div class="flex flex-col gap-3 sm:flex-row sm:items-center sm:justify-between">
 
+        <div>
+            <h1 class="text-2xl font-bold text-gray-900">
+                Tambah Ternak
+            </h1>
 
-<div class="bg-white rounded-lg shadow-sm">
+            <p class="mt-1 text-sm text-gray-500">
+                Tambahkan data ternak baru ke dalam sistem.
+            </p>
+        </div>
 
-    <div class="p-6 border-b">
+        <a href="{{ route('ternak.index') }}"
+           class="inline-flex items-center justify-center gap-2
+                  rounded-lg border border-gray-300 bg-white
+                  px-4 py-2.5 text-sm font-semibold text-gray-700
+                  transition hover:bg-gray-50">
 
-        <h2 class="text-lg font-semibold text-gray-800">
-            Form Data Ternak
-        </h2>
+            <svg xmlns="http://www.w3.org/2000/svg"
+                 class="h-4 w-4"
+                 fill="none"
+                 viewBox="0 0 24 24"
+                 stroke="currentColor"
+                 stroke-width="2">
+                <path stroke-linecap="round"
+                      stroke-linejoin="round"
+                      d="M10.5 19.5L3 12m0 0l7.5-7.5M3 12h18" />
+            </svg>
 
-        <p class="text-sm text-gray-500 mt-1">
-            Isi data ternak dengan lengkap.
-        </p>
+            Kembali
+        </a>
 
     </div>
 
 
-    <form
-        action="{{ route('ternak.store') }}"
-        method="POST"
-    >
+    {{-- ERROR --}}
+    @if($errors->any())
 
-        @csrf
+        <div class="rounded-xl border border-red-200 bg-red-50 p-4">
 
+            <div class="flex gap-3">
 
-        <div class="p-6 space-y-6">
+                <svg xmlns="http://www.w3.org/2000/svg"
+                     class="h-5 w-5 shrink-0 text-red-600"
+                     fill="none"
+                     viewBox="0 0 24 24"
+                     stroke="currentColor"
+                     stroke-width="2">
+                    <path stroke-linecap="round"
+                          stroke-linejoin="round"
+                          d="M12 8v4m0 4h.01M10.29 3.86l-7.82 13.5A2 2 0 004.2 20h15.6a2 2 0 001.73-2.64l-7.82-13.5a2 2 0 00-3.42 0z" />
+                </svg>
 
-            {{-- KODE TERNAK --}}
-            <div>
+                <div>
 
-                <label
-                    for="kode_ternak"
-                    class="block text-sm font-medium text-gray-700 mb-2"
-                >
-                    Kode Ternak
-                </label>
-
-                <input
-                    type="text"
-                    name="kode_ternak"
-                    id="kode_ternak"
-                    value="{{ old('kode_ternak') }}"
-                    placeholder="Contoh: SAPI-001"
-                    class="w-full rounded-lg border-gray-300 focus:border-blue-500 focus:ring-blue-500"
-                >
-
-                @error('kode_ternak')
-                    <p class="mt-1 text-sm text-red-600">
-                        {{ $message }}
+                    <p class="text-sm font-semibold text-red-800">
+                        Data belum dapat disimpan.
                     </p>
-                @enderror
 
-            </div>
-
-
-            {{-- JENIS TERNAK --}}
-            <div>
-
-                <label
-                    for="jenis_ternak_id"
-                    class="block text-sm font-medium text-gray-700 mb-2"
-                >
-                    Jenis Ternak
-                </label>
-
-                <select
-                    name="jenis_ternak_id"
-                    id="jenis_ternak_id"
-                    class="w-full rounded-lg border-gray-300 focus:border-blue-500 focus:ring-blue-500"
-                >
-
-                    <option value="">
-                        -- Pilih Jenis Ternak --
-                    </option>
-
-                    @foreach ($jenisTernak as $jenis)
-
-                        <option
-                            value="{{ $jenis->id }}"
-                            {{ old('jenis_ternak_id') == $jenis->id ? 'selected' : '' }}
-                        >
-                            {{ $jenis->nama_jenis }}
-                        </option>
-
-                    @endforeach
-
-                </select>
-
-                @error('jenis_ternak_id')
-                    <p class="mt-1 text-sm text-red-600">
-                        {{ $message }}
-                    </p>
-                @enderror
-
-            </div>
-
-
-            {{-- LOKASI --}}
-            <div>
-
-                <label
-                    for="lokasi_id"
-                    class="block text-sm font-medium text-gray-700 mb-2"
-                >
-                    Lokasi Peternakan
-                </label>
-
-                <select
-                    name="lokasi_id"
-                    id="lokasi_id"
-                    class="w-full rounded-lg border-gray-300 focus:border-blue-500 focus:ring-blue-500"
-                >
-
-                    <option value="">
-                        -- Pilih Lokasi --
-                    </option>
-
-                    @foreach ($lokasi as $item)
-
-                        <option
-                            value="{{ $item->id }}"
-                            {{ old('lokasi_id') == $item->id ? 'selected' : '' }}
-                        >
-                            {{ $item->nama }}
-                        </option>
-
-                    @endforeach
-
-                </select>
-
-                @error('lokasi_id')
-                    <p class="mt-1 text-sm text-red-600">
-                        {{ $message }}
-                    </p>
-                @enderror
-
-            </div>
-
-
-            {{-- RFID --}}
-            <div>
-
-                <label
-                    for="kode_rfid"
-                    class="block text-sm font-medium text-gray-700 mb-2"
-                >
-                    Kode RFID
-                    <span class="text-gray-400">
-                        (Opsional)
-                    </span>
-                </label>
-
-                <input
-                    type="text"
-                    name="kode_rfid"
-                    id="kode_rfid"
-                    value="{{ old('kode_rfid') }}"
-                    placeholder="Contoh: RFID-0001"
-                    class="w-full rounded-lg border-gray-300 focus:border-blue-500 focus:ring-blue-500"
-                >
-
-                @error('kode_rfid')
-                    <p class="mt-1 text-sm text-red-600">
-                        {{ $message }}
-                    </p>
-                @enderror
-
-            </div>
-
-
-            {{-- STATUS --}}
-            <div>
-
-                <label
-                    for="status"
-                    class="block text-sm font-medium text-gray-700 mb-2"
-                >
-                    Status
-                </label>
-
-                <select
-                    name="status"
-                    id="status"
-                    class="w-full rounded-lg border-gray-300 focus:border-blue-500 focus:ring-blue-500"
-                >
-
-                    <option
-                        value="tersedia"
-                        {{ old('status', 'tersedia') == 'tersedia' ? 'selected' : '' }}
-                    >
-                        Tersedia
-                    </option>
-
-                    <option
-                        value="dipesan"
-                        {{ old('status') == 'dipesan' ? 'selected' : '' }}
-                    >
-                        Dipesan
-                    </option>
-
-                    <option
-                        value="terkirim"
-                        {{ old('status') == 'terkirim' ? 'selected' : '' }}
-                    >
-                        Terkirim
-                    </option>
-
-                    <option
-                        value="disembelih"
-                        {{ old('status') == 'disembelih' ? 'selected' : '' }}
-                    >
-                        Disembelih
-                    </option>
-
-                </select>
-
-                @error('status')
-                    <p class="mt-1 text-sm text-red-600">
-                        {{ $message }}
-                    </p>
-                @enderror
-
-            </div>
-
-
-            {{-- BOBOT --}}
-            <div>
-
-                <label
-                    for="bobot_terakhir"
-                    class="block text-sm font-medium text-gray-700 mb-2"
-                >
-                    Bobot Terakhir
-                    <span class="text-gray-400">
-                        (Opsional)
-                    </span>
-                </label>
-
-                <div class="flex">
-
-                    <input
-                        type="number"
-                        name="bobot_terakhir"
-                        id="bobot_terakhir"
-                        value="{{ old('bobot_terakhir') }}"
-                        step="0.01"
-                        min="0"
-                        placeholder="Contoh: 35.50"
-                        class="w-full rounded-l-lg border-gray-300 focus:border-blue-500 focus:ring-blue-500"
-                    >
-
-                    <span class="inline-flex items-center px-4 bg-gray-100 border border-l-0 border-gray-300 rounded-r-lg text-gray-600">
-                        kg
-                    </span>
+                    <ul class="mt-1 list-disc pl-5 text-sm text-red-700">
+                        @foreach($errors->all() as $error)
+                            <li>{{ $error }}</li>
+                        @endforeach
+                    </ul>
 
                 </div>
 
-                @error('bobot_terakhir')
-                    <p class="mt-1 text-sm text-red-600">
-                        {{ $message }}
-                    </p>
-                @enderror
-
             </div>
 
         </div>
 
+    @endif
 
-        {{-- BUTTON --}}
-        <div class="px-6 py-4 bg-gray-50 border-t flex justify-end gap-3">
 
-            <a
-                href="{{ route('ternak.index') }}"
-                class="px-5 py-2.5 bg-gray-200 text-gray-700 rounded-lg hover:bg-gray-300"
-            >
-                Batal
-            </a>
+    {{-- FORM --}}
+    <div class="overflow-hidden rounded-xl border border-gray-200 bg-white shadow-sm">
 
-            <button
-                type="submit"
-                class="px-5 py-2.5 bg-blue-600 text-white rounded-lg hover:bg-blue-700"
-            >
-                Simpan Ternak
-            </button>
+        <div class="border-b border-gray-200 px-6 py-5">
+
+            <h2 class="text-lg font-semibold text-gray-900">
+                Informasi Ternak
+            </h2>
+
+            <p class="mt-1 text-sm text-gray-500">
+                Isi informasi ternak sesuai dengan data yang tersedia.
+            </p>
 
         </div>
 
-    </form>
+
+        <form action="{{ route('ternak.store') }}" method="POST">
+
+            @csrf
+
+            <div class="space-y-6 p-6">
+
+                {{-- KODE & RFID --}}
+                <div class="grid grid-cols-1 gap-6 md:grid-cols-2">
+
+                    <div>
+
+                        <label for="kode_ternak"
+                               class="mb-2 block text-sm font-medium text-gray-700">
+                            Kode Ternak
+                            <span class="text-red-500">*</span>
+                        </label>
+
+                        <input
+                            type="text"
+                            name="kode_ternak"
+                            id="kode_ternak"
+                            value="{{ old('kode_ternak') }}"
+                            placeholder="Contoh: S-001"
+                            maxlength="10"
+                            required
+                            class="w-full rounded-lg border border-gray-300
+                                   bg-white px-4 py-2.5 text-sm text-gray-900
+                                   outline-none transition
+                                   placeholder:text-gray-400
+                                   focus:border-[#164A3A]
+                                   focus:ring-2 focus:ring-[#164A3A]/10"
+                        >
+
+                        @error('kode_ternak')
+                            <p class="mt-1.5 text-sm text-red-600">
+                                {{ $message }}
+                            </p>
+                        @enderror
+
+                    </div>
+
+
+                    <div>
+
+                        <label for="kode_rfid"
+                               class="mb-2 block text-sm font-medium text-gray-700">
+                            Kode RFID
+                            <span class="font-normal text-gray-400">(opsional)</span>
+                        </label>
+
+                        <input
+                            type="text"
+                            name="kode_rfid"
+                            id="kode_rfid"
+                            value="{{ old('kode_rfid') }}"
+                            placeholder="Contoh: RFID-0001"
+                            class="w-full rounded-lg border border-gray-300
+                                   bg-white px-4 py-2.5 text-sm text-gray-900
+                                   outline-none transition
+                                   placeholder:text-gray-400
+                                   focus:border-[#164A3A]
+                                   focus:ring-2 focus:ring-[#164A3A]/10"
+                        >
+
+                        @error('kode_rfid')
+                            <p class="mt-1.5 text-sm text-red-600">
+                                {{ $message }}
+                            </p>
+                        @enderror
+
+                    </div>
+
+                </div>
+
+
+                {{-- JENIS & LOKASI --}}
+                <div class="grid grid-cols-1 gap-6 md:grid-cols-2">
+
+                    <div>
+
+                        <label for="jenis_ternak_id"
+                               class="mb-2 block text-sm font-medium text-gray-700">
+                            Jenis Ternak
+                            <span class="text-red-500">*</span>
+                        </label>
+
+                        <select
+                            name="jenis_ternak_id"
+                            id="jenis_ternak_id"
+                            required
+                            class="w-full rounded-lg border border-gray-300
+                                   bg-white px-4 py-2.5 text-sm text-gray-700
+                                   outline-none transition
+                                   focus:border-[#164A3A]
+                                   focus:ring-2 focus:ring-[#164A3A]/10"
+                        >
+
+                            <option value="">
+                                Pilih jenis ternak
+                            </option>
+
+                            @foreach($jenisTernak as $jenis)
+
+                                <option
+                                    value="{{ $jenis->id }}"
+                                    {{ old('jenis_ternak_id') == $jenis->id ? 'selected' : '' }}
+                                >
+                                    {{ $jenis->nama_jenis }}
+                                    ({{ ucfirst($jenis->spesies) }})
+                                </option>
+
+                            @endforeach
+
+                        </select>
+
+                        @error('jenis_ternak_id')
+                            <p class="mt-1.5 text-sm text-red-600">
+                                {{ $message }}
+                            </p>
+                        @enderror
+
+                    </div>
+
+
+                    <div>
+
+                        <label for="lokasi_id"
+                               class="mb-2 block text-sm font-medium text-gray-700">
+                            Lokasi Peternakan
+                            <span class="text-red-500">*</span>
+                        </label>
+
+                        <select
+                            name="lokasi_id"
+                            id="lokasi_id"
+                            required
+                            class="w-full rounded-lg border border-gray-300
+                                   bg-white px-4 py-2.5 text-sm text-gray-700
+                                   outline-none transition
+                                   focus:border-[#164A3A]
+                                   focus:ring-2 focus:ring-[#164A3A]/10"
+                        >
+
+                            <option value="">
+                                Pilih lokasi peternakan
+                            </option>
+
+                            @foreach($lokasi as $item)
+
+                                <option
+                                    value="{{ $item->id }}"
+                                    {{ old('lokasi_id') == $item->id ? 'selected' : '' }}
+                                >
+                                    {{ $item->nama }}
+                                </option>
+
+                            @endforeach
+
+                        </select>
+
+                        @error('lokasi_id')
+                            <p class="mt-1.5 text-sm text-red-600">
+                                {{ $message }}
+                            </p>
+                        @enderror
+
+                    </div>
+
+                </div>
+
+
+                {{-- STATUS & BOBOT --}}
+                <div class="grid grid-cols-1 gap-6 md:grid-cols-2">
+
+                    <div>
+
+                        <label for="status"
+                               class="mb-2 block text-sm font-medium text-gray-700">
+                            Status
+                            <span class="text-red-500">*</span>
+                        </label>
+
+                        <select
+                            name="status"
+                            id="status"
+                            required
+                            class="w-full rounded-lg border border-gray-300
+                                   bg-white px-4 py-2.5 text-sm text-gray-700
+                                   outline-none transition
+                                   focus:border-[#164A3A]
+                                   focus:ring-2 focus:ring-[#164A3A]/10"
+                        >
+
+                            <option value="tersedia"
+                                {{ old('status', 'tersedia') === 'tersedia' ? 'selected' : '' }}>
+                                Tersedia
+                            </option>
+
+                            <option value="dipesan"
+                                {{ old('status') === 'dipesan' ? 'selected' : '' }}>
+                                Dipesan
+                            </option>
+
+                            <option value="terkirim"
+                                {{ old('status') === 'terkirim' ? 'selected' : '' }}>
+                                Terkirim
+                            </option>
+
+                            <option value="disembelih"
+                                {{ old('status') === 'disembelih' ? 'selected' : '' }}>
+                                Disembelih
+                            </option>
+
+                        </select>
+
+                        @error('status')
+                            <p class="mt-1.5 text-sm text-red-600">
+                                {{ $message }}
+                            </p>
+                        @enderror
+
+                    </div>
+
+
+                    <div>
+
+                        <label for="bobot_terakhir"
+                               class="mb-2 block text-sm font-medium text-gray-700">
+                            Bobot Terakhir
+                            <span class="font-normal text-gray-400">(opsional)</span>
+                        </label>
+
+                        <div class="flex">
+
+                            <input
+                                type="number"
+                                name="bobot_terakhir"
+                                id="bobot_terakhir"
+                                value="{{ old('bobot_terakhir') }}"
+                                min="0"
+                                step="0.1"
+                                placeholder="Contoh: 45.5"
+                                class="w-full rounded-l-lg border border-gray-300
+                                       bg-white px-4 py-2.5 text-sm text-gray-900
+                                       outline-none transition
+                                       placeholder:text-gray-400
+                                       focus:border-[#164A3A]
+                                       focus:ring-2 focus:ring-[#164A3A]/10"
+                            >
+
+                            <span class="inline-flex items-center rounded-r-lg
+                                         border border-l-0 border-gray-300
+                                         bg-gray-50 px-4 text-sm text-gray-500">
+                                kg
+                            </span>
+
+                        </div>
+
+                        @error('bobot_terakhir')
+                            <p class="mt-1.5 text-sm text-red-600">
+                                {{ $message }}
+                            </p>
+                        @enderror
+
+                    </div>
+
+                </div>
+
+            </div>
+
+
+            {{-- FOOTER --}}
+            <div class="flex flex-col-reverse gap-3 border-t border-gray-200
+                        bg-gray-50 px-6 py-4 sm:flex-row sm:justify-end">
+
+                <a href="{{ route('ternak.index') }}"
+                   class="inline-flex items-center justify-center rounded-lg
+                          border border-gray-300 bg-white px-5 py-2.5
+                          text-sm font-semibold text-gray-700
+                          transition hover:bg-gray-50">
+                    Batal
+                </a>
+
+                <button
+                    type="submit"
+                    class="inline-flex items-center justify-center rounded-lg
+                           bg-[#164A3A] px-5 py-2.5 text-sm font-semibold
+                           text-white transition hover:bg-[#123d30]"
+                >
+                    Simpan Ternak
+                </button>
+
+            </div>
+
+        </form>
+
+    </div>
 
 </div>
 
