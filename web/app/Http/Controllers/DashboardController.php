@@ -16,53 +16,44 @@ class DashboardController extends Controller
      */
     public function index()
     {
+        $totalTernak = \App\Models\Ternak::count();
+
+        $tersedia = \App\Models\Ternak::where('status', 'tersedia')->count();
+
+        $dipesan = \App\Models\Ternak::where('status', 'dipesan')->count();
+
+        $totalLokasi = \App\Models\LokasiPeternakan::count();
+
+        $totalPembeli = \App\Models\Pembeli::count();
+
+        $belumDiverifikasi = \App\Models\Penimbangan::where(
+            'status_verifikasi',
+            'menunggu'
+        )->count();
+
+        $ternakPerLokasi = \App\Models\LokasiPeternakan::withCount('ternak')
+            ->get();
+
+        $ternakPerJenis = \App\Models\JenisTernak::withCount('ternak')
+            ->get();
+
+        $penimbanganTerbaru = \App\Models\Penimbangan::with([
+            'ternak.lokasi'
+        ])
+            ->latest()
+            ->take(4)
+            ->get();
+
         return view('dashboard', [
-            // Total seluruh ternak
-            'totalTernak' => Ternak::count(),
-
-            // Ternak tersedia
-            'tersedia' => Ternak::where('status', 'tersedia')->count(),
-
-            // Ternak sudah dipesan
-            'dipesan' => Ternak::where('status', 'dipesan')->count(),
-
-            // Total lokasi peternakan
-            'totalLokasi' => LokasiPeternakan::count(),
-
-            // Total pembeli
-            'totalPembeli' => Pembeli::count(),
-
-            // Penimbangan yang masih menunggu verifikasi
-            'belumDiverifikasi' => Penimbangan::where(
-                'status_verifikasi',
-                'menunggu'
-            )->count(),
-
-            // Jumlah ternak berdasarkan lokasi
-            'ternakPerLokasi' => LokasiPeternakan::withCount('ternak')
-                ->get()
-                ->map(function ($lokasi) {
-                    return [
-                        'lokasi' => $lokasi->nama,
-                        'jumlah' => $lokasi->ternak_count,
-                    ];
-                }),
-
-            // Jumlah ternak berdasarkan jenis
-            'ternakPerJenis' => JenisTernak::withCount('ternak')
-                ->get()
-                ->map(function ($jenis) {
-                    return [
-                        'jenis' => $jenis->nama_jenis,
-                        'jumlah' => $jenis->ternak_count,
-                    ];
-                }),
-
-            // 4 data penimbangan terbaru
-            'penimbanganTerbaru' => Penimbangan::with('ternak.lokasi')
-                ->latest()
-                ->take(4)
-                ->get(),
+            'totalTernak' => $totalTernak,
+            'tersedia' => $tersedia,
+            'dipesan' => $dipesan,
+            'totalLokasi' => $totalLokasi,
+            'totalPembeli' => $totalPembeli,
+            'belumDiverifikasi' => $belumDiverifikasi,
+            'ternakPerLokasi' => $ternakPerLokasi,
+            'ternakPerJenis' => $ternakPerJenis,
+            'penimbanganTerbaru' => $penimbanganTerbaru,
         ]);
     }
 }
