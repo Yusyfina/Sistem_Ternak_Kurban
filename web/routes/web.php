@@ -52,7 +52,10 @@ Route::middleware(['auth'])->group(function () {
     // ======================================================
 
     Route::resource('ternak', TernakController::class);
-
+    Route::get('/ternak/{ternak}/delete', [
+        TernakController::class,
+        'delete'
+    ])->name('ternak.delete');
 
     // ======================================================
     // PENIMBANGAN
