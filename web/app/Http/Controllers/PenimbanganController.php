@@ -9,12 +9,13 @@ use Illuminate\Http\Request;
 class PenimbanganController extends Controller
 {
     /**
-     * Daftar penimbangan terbaru.
+     * Menampilkan daftar penimbangan terbaru.
      */
     public function index()
     {
         $penimbangan = Penimbangan::with([
-            'ternak',
+            'ternak.jenisTernak',
+            'ternak.lokasi',
             'operator',
         ])
             ->latest('ditimbang_at')
@@ -24,11 +25,15 @@ class PenimbanganController extends Controller
     }
 
     /**
-     * Form penimbangan.
+     * Menampilkan form untuk membuat penimbangan baru.
      */
     public function create()
     {
-        $ternak = Ternak::where('status', 'tersedia')
+        $ternak = Ternak::with([
+            'jenisTernak',
+            'lokasi',
+        ])
+            ->where('status', 'tersedia')
             ->orderBy('kode_ternak')
             ->get();
 
@@ -36,46 +41,86 @@ class PenimbanganController extends Controller
     }
 
     /**
-     * Simpan hasil penimbangan.
+     * Menyimpan hasil penimbangan.
      */
     public function store(Request $request)
     {
         $validated = $request->validate([
-            'ternak_id' => ['required', 'exists:ternak,id'],
-            'bobot' => ['required', 'numeric', 'min:0'],
+            'ternak_id' => [
+                'required',
+                'exists:ternak,id',
+            ],
+
+            'bobot' => [
+                'required',
+                'numeric',
+                'min:0',
+            ],
+
             'metode' => [
                 'required',
-                'in:manual,estimasi,otomatis_iot'
+                'in:manual,estimasi,otomatis_iot',
             ],
+
             'sumber' => [
                 'required',
-                'in:manual_entry,otomatis_iot,data_manajemen,tidak_ada_data'
+                'in:manual_entry,otomatis_iot,data_manajemen,tidak_ada_data',
             ],
-            'ditimbang_at' => ['nullable', 'date'],
+
+            'ditimbang_at' => [
+                'nullable',
+                'date',
+            ],
         ]);
 
+        /*
+         * Operator yang melakukan penimbangan
+         * diambil dari user yang sedang login.
+         */
         $validated['operator_id'] = auth()->id();
+
+        /*
+         * Setiap penimbangan baru otomatis
+         * masuk status menunggu verifikasi.
+         */
         $validated['status_verifikasi'] = 'menunggu';
 
-        Penimbangan::create($validated);
+        /*
+         * Jika tanggal/waktu tidak diisi,
+         * gunakan waktu sekarang.
+         */
+        if (empty($validated['ditimbang_at'])) {
+            $validated['ditimbang_at'] = now();
+        }
 
-        // Update bobot terakhir pada ternak
-        Ternak::where('id', $validated['ternak_id'])
+        /*
+         * Simpan data penimbangan.
+         */
+        $penimbangan = Penimbangan::create($validated);
+
+        /*
+         * Update bobot terakhir pada data ternak.
+         */
+        Ternak::where('id', $penimbangan->ternak_id)
             ->update([
-                'bobot_terakhir' => $validated['bobot'],
+                'bobot_terakhir' => $penimbangan->bobot,
             ]);
 
         return redirect()
             ->route('penimbangan.index')
-            ->with('success', 'Data penimbangan berhasil disimpan.');
+            ->with(
+                'success',
+                'Data penimbangan berhasil disimpan.'
+            );
     }
 
     /**
-     * Riwayat seluruh penimbangan.
+     * Menampilkan seluruh riwayat penimbangan.
      */
     public function riwayat()
     {
         $penimbangan = Penimbangan::with([
+            'ternak.jenisTernak',
             'ternak.lokasi',
             'operator',
             'verifikator',
@@ -83,6 +128,9 @@ class PenimbanganController extends Controller
             ->latest('ditimbang_at')
             ->paginate(15);
 
-        return view('penimbangan.riwayat', compact('penimbangan'));
+        return view(
+            'penimbangan.riwayat',
+            compact('penimbangan')
+        );
     }
 }
