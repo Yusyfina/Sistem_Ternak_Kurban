@@ -7,7 +7,6 @@ use App\Models\LokasiPeternakan;
 use App\Models\Pembeli;
 use App\Models\Penimbangan;
 use App\Models\Ternak;
-use Illuminate\Http\Request;
 
 class DashboardController extends Controller
 {
@@ -16,44 +15,120 @@ class DashboardController extends Controller
      */
     public function index()
     {
-        $totalTernak = \App\Models\Ternak::count();
+        /*
+        |--------------------------------------------------------------------------
+        | STATISTIK UTAMA
+        |--------------------------------------------------------------------------
+        */
 
-        $tersedia = \App\Models\Ternak::where('status', 'tersedia')->count();
+        $totalTernak = Ternak::count();
 
-        $dipesan = \App\Models\Ternak::where('status', 'dipesan')->count();
+        $tersedia = Ternak::where(
+            'status',
+            'tersedia'
+        )->count();
 
-        $totalLokasi = \App\Models\LokasiPeternakan::count();
+        $dipesan = Ternak::where(
+            'status',
+            'dipesan'
+        )->count();
 
-        $totalPembeli = \App\Models\Pembeli::count();
+        $terkirim = Ternak::where(
+            'status',
+            'terkirim'
+        )->count();
 
-        $belumDiverifikasi = \App\Models\Penimbangan::where(
+        $disembelih = Ternak::where(
+            'status',
+            'disembelih'
+        )->count();
+
+        $totalLokasi = LokasiPeternakan::count();
+
+        $totalPembeli = Pembeli::count();
+
+        $belumDiverifikasi = Penimbangan::where(
             'status_verifikasi',
             'menunggu'
         )->count();
 
-        $ternakPerLokasi = \App\Models\LokasiPeternakan::withCount('ternak')
+
+        /*
+        |--------------------------------------------------------------------------
+        | TERNAK BERDASARKAN LOKASI
+        |--------------------------------------------------------------------------
+        */
+
+        $ternakPerLokasi = LokasiPeternakan::withCount('ternak')
+            ->orderBy('nama')
             ->get();
 
-        $ternakPerJenis = \App\Models\JenisTernak::withCount('ternak')
+
+        /*
+        |--------------------------------------------------------------------------
+        | TERNAK BERDASARKAN JENIS
+        |--------------------------------------------------------------------------
+        */
+
+        $ternakPerJenis = JenisTernak::withCount('ternak')
+            ->orderBy('spesies')
+            ->orderBy('nama_jenis')
             ->get();
 
-        $penimbanganTerbaru = \App\Models\Penimbangan::with([
-            'ternak.lokasi'
+
+        /*
+        |--------------------------------------------------------------------------
+        | PENIMBANGAN TERBARU
+        |--------------------------------------------------------------------------
+        */
+
+        $penimbanganTerbaru = Penimbangan::with([
+            'ternak.lokasi',
+            'ternak.jenisTernak',
+            'operator',
         ])
-            ->latest()
-            ->take(4)
+            ->latest('ditimbang_at')
+            ->take(5)
             ->get();
+
+
+        /*
+        |--------------------------------------------------------------------------
+        | DATA UNTUK LINE CHART PENIMBANGAN
+        |--------------------------------------------------------------------------
+        */
+
+        $dataPenimbangan = Penimbangan::with('ternak')
+            ->whereNotNull('ditimbang_at')
+            ->latest('ditimbang_at')
+            ->take(10)
+            ->get()
+            ->sortBy('ditimbang_at')
+            ->values();
+
+
+        /*
+        |--------------------------------------------------------------------------
+        | KIRIM DATA KE VIEW
+        |--------------------------------------------------------------------------
+        */
 
         return view('dashboard', [
             'totalTernak' => $totalTernak,
             'tersedia' => $tersedia,
             'dipesan' => $dipesan,
+            'terkirim' => $terkirim,
+            'disembelih' => $disembelih,
+
             'totalLokasi' => $totalLokasi,
             'totalPembeli' => $totalPembeli,
             'belumDiverifikasi' => $belumDiverifikasi,
+
             'ternakPerLokasi' => $ternakPerLokasi,
             'ternakPerJenis' => $ternakPerJenis,
+
             'penimbanganTerbaru' => $penimbanganTerbaru,
+            'dataPenimbangan' => $dataPenimbangan,
         ]);
     }
 }

@@ -14,165 +14,165 @@
 
 </div>
 
-<div class="bg-white rounded-lg shadow-sm">
 
-    {{-- Header --}}
-    <div class="p-5 border-b">
+<div class="max-w-4xl">
 
-        <h2 class="font-semibold text-gray-800">
-            Form Data Pembeli
-        </h2>
+    <div class="bg-white rounded-xl border border-gray-200 overflow-hidden">
 
-        <p class="text-sm text-gray-500 mt-1">
-            Isi data pembeli dengan lengkap.
-        </p>
+        {{-- HEADER --}}
+        <div class="px-6 py-5 border-b border-gray-200">
+
+            <h2 class="text-lg font-semibold text-gray-800">
+                Form Data Pembeli
+            </h2>
+
+            <p class="text-sm text-gray-500 mt-1">
+                Isi data pembeli dengan lengkap.
+            </p>
+
+        </div>
+
+
+        {{-- FORM --}}
+        <form
+            action="{{ route('pembeli.store') }}"
+            method="POST"
+        >
+
+            @csrf
+
+            <div class="p-6 space-y-6">
+
+
+                {{-- NAMA --}}
+                <div>
+
+                    <label
+                        for="nama"
+                        class="block text-sm font-medium text-gray-700 mb-2"
+                    >
+                        Nama Pembeli
+                        <span class="text-red-500">*</span>
+                    </label>
+
+                    <input
+                        type="text"
+                        name="nama"
+                        id="nama"
+                        value="{{ old('nama') }}"
+                        required
+                        maxlength="255"
+                        placeholder="Masukkan nama pembeli"
+                        class="w-full rounded-lg border-gray-300
+                               focus:border-green-600 focus:ring-green-600"
+                    >
+
+                    @error('nama')
+                        <p class="mt-1.5 text-sm text-red-600">
+                            {{ $message }}
+                        </p>
+                    @enderror
+
+                </div>
+
+
+                {{-- TELEPON --}}
+                <div>
+
+                    <label
+                        for="telepon"
+                        class="block text-sm font-medium text-gray-700 mb-2"
+                    >
+                        No. Telepon
+                        <span class="text-red-500">*</span>
+                    </label>
+
+                    <input
+                        type="text"
+                        name="telepon"
+                        id="telepon"
+                        value="{{ old('telepon') }}"
+                        required
+                        maxlength="20"
+                        placeholder="Contoh: 081234567890"
+                        class="w-full rounded-lg border-gray-300
+                               focus:border-green-600 focus:ring-green-600"
+                    >
+
+                    <p class="mt-1.5 text-xs text-gray-500">
+                        Masukkan nomor telepon yang aktif.
+                    </p>
+
+                    @error('telepon')
+                        <p class="mt-1.5 text-sm text-red-600">
+                            {{ $message }}
+                        </p>
+                    @enderror
+
+                </div>
+
+
+                {{-- ALAMAT --}}
+                <div>
+
+                    <label
+                        for="alamat"
+                        class="block text-sm font-medium text-gray-700 mb-2"
+                    >
+                        Alamat
+                    </label>
+
+                    <textarea
+                        name="alamat"
+                        id="alamat"
+                        rows="4"
+                        placeholder="Masukkan alamat pembeli"
+                        class="w-full rounded-lg border-gray-300
+                               focus:border-green-600 focus:ring-green-600"
+                    >{{ old('alamat') }}</textarea>
+
+                    @error('alamat')
+                        <p class="mt-1.5 text-sm text-red-600">
+                            {{ $message }}
+                        </p>
+                    @enderror
+
+                </div>
+
+
+            </div>
+
+
+            {{-- BUTTON --}}
+            <div class="px-6 py-4 bg-gray-50 border-t border-gray-200">
+
+                <div class="flex items-center justify-end gap-3">
+
+                    <a
+                        href="{{ route('pembeli.index') }}"
+                        class="px-5 py-2.5 border border-gray-300
+                               text-gray-700 text-sm font-medium rounded-lg
+                               hover:bg-gray-100 transition"
+                    >
+                        Batal
+                    </a>
+
+                    <button
+                        type="submit"
+                        class="px-5 py-2.5 bg-green-700 text-white
+                               text-sm font-medium rounded-lg
+                               hover:bg-green-800 transition"
+                    >
+                        Simpan Pembeli
+                    </button>
+
+                </div>
+
+            </div>
+
+        </form>
 
     </div>
-
-    {{-- Form --}}
-    <form
-        action="{{ route('pembeli.store') }}"
-        method="POST"
-        class="p-5"
-    >
-
-        @csrf
-
-        <div class="grid grid-cols-1 md:grid-cols-2 gap-5">
-
-            {{-- Nama --}}
-            <div>
-
-                <label
-                    for="nama"
-                    class="block text-sm font-medium text-gray-700 mb-1"
-                >
-                    Nama Pembeli
-                </label>
-
-                <input
-                    type="text"
-                    name="nama"
-                    id="nama"
-                    value="{{ old('nama') }}"
-                    required
-                    maxlength="255"
-                    placeholder="Masukkan nama pembeli"
-                    class="w-full border-gray-300 rounded-lg focus:border-blue-500 focus:ring-blue-500"
-                >
-
-                @error('nama')
-                    <p class="mt-1 text-sm text-red-600">
-                        {{ $message }}
-                    </p>
-                @enderror
-
-            </div>
-
-            {{-- No HP --}}
-            <div>
-
-                <label
-                    for="no_hp"
-                    class="block text-sm font-medium text-gray-700 mb-1"
-                >
-                    No. HP
-                </label>
-
-                <input
-                    type="text"
-                    name="no_hp"
-                    id="no_hp"
-                    value="{{ old('no_hp') }}"
-                    maxlength="30"
-                    placeholder="Contoh: 081234567890"
-                    class="w-full border-gray-300 rounded-lg focus:border-blue-500 focus:ring-blue-500"
-                >
-
-                @error('no_hp')
-                    <p class="mt-1 text-sm text-red-600">
-                        {{ $message }}
-                    </p>
-                @enderror
-
-            </div>
-
-            {{-- Email --}}
-            <div>
-
-                <label
-                    for="email"
-                    class="block text-sm font-medium text-gray-700 mb-1"
-                >
-                    Email
-                </label>
-
-                <input
-                    type="email"
-                    name="email"
-                    id="email"
-                    value="{{ old('email') }}"
-                    maxlength="255"
-                    placeholder="Contoh: nama@email.com"
-                    class="w-full border-gray-300 rounded-lg focus:border-blue-500 focus:ring-blue-500"
-                >
-
-                @error('email')
-                    <p class="mt-1 text-sm text-red-600">
-                        {{ $message }}
-                    </p>
-                @enderror
-
-            </div>
-
-            {{-- Alamat --}}
-            <div>
-
-                <label
-                    for="alamat"
-                    class="block text-sm font-medium text-gray-700 mb-1"
-                >
-                    Alamat
-                </label>
-
-                <textarea
-                    name="alamat"
-                    id="alamat"
-                    rows="3"
-                    placeholder="Masukkan alamat pembeli"
-                    class="w-full border-gray-300 rounded-lg focus:border-blue-500 focus:ring-blue-500"
-                >{{ old('alamat') }}</textarea>
-
-                @error('alamat')
-                    <p class="mt-1 text-sm text-red-600">
-                        {{ $message }}
-                    </p>
-                @enderror
-
-            </div>
-
-        </div>
-
-        {{-- Tombol --}}
-        <div class="flex items-center justify-end gap-3 mt-6 pt-5 border-t">
-
-            <a
-                href="{{ route('pembeli.index') }}"
-                class="px-4 py-2 border border-gray-300 text-gray-700 rounded-lg hover:bg-gray-50"
-            >
-                Batal
-            </a>
-
-            <button
-                type="submit"
-                class="px-4 py-2 bg-blue-600 text-white rounded-lg hover:bg-blue-700"
-            >
-                Simpan Pembeli
-            </button>
-
-        </div>
-
-    </form>
 
 </div>
 

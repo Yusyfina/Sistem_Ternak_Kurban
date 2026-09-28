@@ -1,33 +1,133 @@
 @extends('layouts.ternak')
 
+@section('title', 'Tambah Penimbangan')
+@section('page-title', 'Tambah Penimbangan')
+
 @section('content')
 
-<div class="mb-6">
+<div class="space-y-6">
 
-    <h1 class="text-2xl font-bold text-gray-800">
-        Tambah Penimbangan
-    </h1>
+    {{-- HEADER --}}
+    <div>
 
-    <p class="text-gray-500 mt-1">
-        Masukkan hasil penimbangan ternak.
-    </p>
+        <div class="flex items-center gap-2 text-sm text-gray-500 mb-2">
 
-</div>
+            <a
+                href="{{ route('penimbangan.index') }}"
+                class="hover:text-[#164A3A] transition">
+
+                Penimbangan
+
+            </a>
+
+            <span>
+                /
+            </span>
+
+            <span class="text-gray-700">
+                Tambah
+            </span>
+
+        </div>
+
+        <h2 class="text-2xl font-bold text-gray-900">
+            Tambah Penimbangan
+        </h2>
+
+        <p class="mt-1 text-sm text-gray-500">
+            Masukkan hasil penimbangan ternak ke dalam sistem.
+        </p>
+
+    </div>
 
 
-<div class="max-w-3xl">
+    {{-- VALIDATION ERROR --}}
+    @if($errors->any())
 
-    <div class="bg-white rounded-lg shadow-sm">
+        <div
+            class="p-4
+                   bg-red-50
+                   border border-red-200
+                   rounded-xl">
 
-        {{-- HEADER --}}
-        <div class="p-6 border-b">
+            <div class="flex gap-3">
 
-            <h2 class="text-lg font-semibold text-gray-800">
+                <div
+                    class="w-8 h-8
+                           rounded-full
+                           bg-red-100
+                           flex items-center
+                           justify-center
+                           flex-shrink-0">
+
+                    <svg
+                        class="w-5 h-5 text-red-600"
+                        fill="none"
+                        stroke="currentColor"
+                        viewBox="0 0 24 24">
+
+                        <path
+                            stroke-linecap="round"
+                            stroke-linejoin="round"
+                            stroke-width="2"
+                            d="M6 18L18 6M6 6l12 12" />
+
+                    </svg>
+
+                </div>
+
+                <div>
+
+                    <p class="font-semibold text-red-800 text-sm">
+                        Data belum dapat disimpan
+                    </p>
+
+                    <ul
+                        class="mt-2
+                               list-disc
+                               list-inside
+                               text-sm
+                               text-red-700
+                               space-y-1">
+
+                        @foreach($errors->all() as $error)
+
+                            <li>
+                                {{ $error }}
+                            </li>
+
+                        @endforeach
+
+                    </ul>
+
+                </div>
+
+            </div>
+
+        </div>
+
+    @endif
+
+
+    {{-- FORM --}}
+    <div
+        class="bg-white
+               border border-gray-200
+               rounded-xl
+               shadow-sm
+               overflow-hidden">
+
+        {{-- FORM HEADER --}}
+        <div
+            class="px-6 py-5
+                   border-b border-gray-200">
+
+            <h3 class="text-lg font-semibold text-gray-900">
                 Form Penimbangan
-            </h2>
+            </h3>
 
             <p class="text-sm text-gray-500 mt-1">
-                Data yang dimasukkan akan berstatus menunggu verifikasi.
+                Data yang dimasukkan akan berstatus Menunggu Verifikasi.
             </p>
 
         </div>
@@ -35,257 +135,456 @@
 
         <form
             action="{{ route('penimbangan.store') }}"
-            method="POST"
-        >
+            method="POST">
 
             @csrf
 
 
-            <div class="p-6 space-y-6">
+            <div class="p-6 space-y-8">
 
-                {{-- TERNAK --}}
+
+                {{-- ================================================= --}}
+                {{-- DATA TERNAK --}}
+                {{-- ================================================= --}}
+
                 <div>
 
-                    <label
-                        for="ternak_id"
-                        class="block text-sm font-medium text-gray-700 mb-2"
-                    >
-                        Ternak
-                    </label>
+                    <div class="mb-4">
 
-                    <select
-                        name="ternak_id"
-                        id="ternak_id"
-                        class="w-full rounded-lg border-gray-300 focus:border-blue-500 focus:ring-blue-500"
-                        required
-                    >
+                        <h4 class="text-base font-semibold text-gray-900">
+                            Data Ternak
+                        </h4>
 
-                        <option value="">
-                            -- Pilih Ternak --
-                        </option>
-
-                        @foreach ($ternak as $item)
-
-                            <option
-                                value="{{ $item->id }}"
-                                {{ old('ternak_id') == $item->id ? 'selected' : '' }}
-                            >
-                                {{ $item->kode_ternak }}
-
-                                -
-                                {{ $item->jenisTernak->nama_jenis ?? '-' }}
-
-                                -
-
-                                {{ $item->lokasi->nama ?? '-' }}
-
-                            </option>
-
-                        @endforeach
-
-                    </select>
-
-                    @error('ternak_id')
-
-                        <p class="mt-1 text-sm text-red-600">
-                            {{ $message }}
+                        <p class="text-sm text-gray-500 mt-1">
+                            Pilih ternak yang akan ditimbang.
                         </p>
-
-                    @enderror
-
-                </div>
-
-
-                {{-- BOBOT --}}
-                <div>
-
-                    <label
-                        for="bobot"
-                        class="block text-sm font-medium text-gray-700 mb-2"
-                    >
-                        Bobot
-                    </label>
-
-                    <div class="flex">
-
-                        <input
-                            type="number"
-                            name="bobot"
-                            id="bobot"
-                            value="{{ old('bobot') }}"
-                            step="0.01"
-                            min="0"
-                            placeholder="Contoh: 35.50"
-                            class="w-full rounded-l-lg border-gray-300 focus:border-blue-500 focus:ring-blue-500"
-                            required
-                        >
-
-                        <span class="inline-flex items-center px-4 bg-gray-100 border border-l-0 border-gray-300 rounded-r-lg text-gray-600">
-                            kg
-                        </span>
 
                     </div>
 
-                    @error('bobot')
 
-                        <p class="mt-1 text-sm text-red-600">
-                            {{ $message }}
+                    <div>
+
+                        <label
+                            for="ternak_id"
+                            class="block text-sm font-medium text-gray-700 mb-2">
+
+                            Ternak
+                            <span class="text-red-500">*</span>
+
+                        </label>
+
+                        <select
+                            name="ternak_id"
+                            id="ternak_id"
+                            required
+                            class="w-full
+                                   px-4 py-3
+                                   bg-white
+                                   border border-gray-300
+                                   rounded-lg
+                                   text-sm
+                                   text-gray-700
+                                   focus:ring-2
+                                   focus:ring-[#164A3A]
+                                   focus:border-[#164A3A]">
+
+                            <option value="">
+                                -- Pilih Ternak --
+                            </option>
+
+                            @foreach ($ternak as $item)
+
+                                <option
+                                    value="{{ $item->id }}"
+                                    {{ old('ternak_id') == $item->id ? 'selected' : '' }}>
+
+                                    {{ $item->kode_ternak }}
+                                    -
+                                    {{ $item->jenisTernak->nama_jenis ?? '-' }}
+                                    -
+                                    {{ $item->lokasi->nama ?? '-' }}
+
+                                </option>
+
+                            @endforeach
+
+                        </select>
+
+                        <p class="mt-1.5 text-xs text-gray-400">
+                            Hanya ternak dengan status tersedia yang ditampilkan.
                         </p>
 
-                    @enderror
+                        @error('ternak_id')
+
+                            <p class="mt-1.5 text-sm text-red-600">
+                                {{ $message }}
+                            </p>
+
+                        @enderror
+
+                    </div>
 
                 </div>
 
 
-                {{-- METODE --}}
+                {{-- PEMBATAS --}}
+                <div class="border-t border-gray-100"></div>
+
+
+                {{-- ================================================= --}}
+                {{-- HASIL PENIMBANGAN --}}
+                {{-- ================================================= --}}
+
                 <div>
 
-                    <label
-                        for="metode"
-                        class="block text-sm font-medium text-gray-700 mb-2"
-                    >
-                        Metode Penimbangan
-                    </label>
+                    <div class="mb-4">
 
-                    <select
-                        name="metode"
-                        id="metode"
-                        class="w-full rounded-lg border-gray-300 focus:border-blue-500 focus:ring-blue-500"
-                        required
-                    >
+                        <h4 class="text-base font-semibold text-gray-900">
+                            Hasil Penimbangan
+                        </h4>
 
-                        <option value="">
-                            -- Pilih Metode --
-                        </option>
-
-                        <option
-                            value="manual"
-                            {{ old('metode') == 'manual' ? 'selected' : '' }}
-                        >
-                            Manual
-                        </option>
-
-                        <option
-                            value="estimasi"
-                            {{ old('metode') == 'estimasi' ? 'selected' : '' }}
-                        >
-                            Estimasi
-                        </option>
-
-                        <option
-                            value="otomatis_iot"
-                            {{ old('metode') == 'otomatis_iot' ? 'selected' : '' }}
-                        >
-                            Otomatis IoT
-                        </option>
-
-                    </select>
-
-                    @error('metode')
-
-                        <p class="mt-1 text-sm text-red-600">
-                            {{ $message }}
+                        <p class="text-sm text-gray-500 mt-1">
+                            Masukkan bobot dan informasi sumber penimbangan.
                         </p>
 
-                    @enderror
+                    </div>
+
+
+                    <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
+
+
+                        {{-- BOBOT --}}
+                        <div>
+
+                            <label
+                                for="bobot"
+                                class="block text-sm font-medium text-gray-700 mb-2">
+
+                                Bobot
+                                <span class="text-red-500">*</span>
+
+                            </label>
+
+                            <div class="flex">
+
+                                <input
+                                    type="number"
+                                    name="bobot"
+                                    id="bobot"
+                                    value="{{ old('bobot') }}"
+                                    step="0.01"
+                                    min="0"
+                                    placeholder="Contoh: 35.50"
+                                    required
+                                    class="w-full
+                                           px-4 py-3
+                                           border border-gray-300
+                                           rounded-l-lg
+                                           text-sm
+                                           focus:ring-2
+                                           focus:ring-[#164A3A]
+                                           focus:border-[#164A3A]">
+
+                                <span
+                                    class="inline-flex
+                                           items-center
+                                           px-4
+                                           bg-gray-100
+                                           border border-l-0
+                                           border-gray-300
+                                           rounded-r-lg
+                                           text-sm
+                                           font-medium
+                                           text-gray-600">
+
+                                    kg
+
+                                </span>
+
+                            </div>
+
+                            @error('bobot')
+
+                                <p class="mt-1.5 text-sm text-red-600">
+                                    {{ $message }}
+                                </p>
+
+                            @enderror
+
+                        </div>
+
+
+                        {{-- METODE --}}
+                        <div>
+
+                            <label
+                                for="metode"
+                                class="block text-sm font-medium text-gray-700 mb-2">
+
+                                Metode Penimbangan
+                                <span class="text-red-500">*</span>
+
+                            </label>
+
+                            <select
+                                name="metode"
+                                id="metode"
+                                required
+                                class="w-full
+                                       px-4 py-3
+                                       bg-white
+                                       border border-gray-300
+                                       rounded-lg
+                                       text-sm
+                                       text-gray-700
+                                       focus:ring-2
+                                       focus:ring-[#164A3A]
+                                       focus:border-[#164A3A]">
+
+                                <option value="">
+                                    -- Pilih Metode --
+                                </option>
+
+                                <option
+                                    value="manual"
+                                    {{ old('metode') == 'manual' ? 'selected' : '' }}>
+
+                                    Manual
+
+                                </option>
+
+                                <option
+                                    value="estimasi"
+                                    {{ old('metode') == 'estimasi' ? 'selected' : '' }}>
+
+                                    Estimasi
+
+                                </option>
+
+                                <option
+                                    value="otomatis_iot"
+                                    {{ old('metode') == 'otomatis_iot' ? 'selected' : '' }}>
+
+                                    Otomatis IoT
+
+                                </option>
+
+                            </select>
+
+                            @error('metode')
+
+                                <p class="mt-1.5 text-sm text-red-600">
+                                    {{ $message }}
+                                </p>
+
+                            @enderror
+
+                        </div>
+
+
+                        {{-- SUMBER --}}
+                        <div class="md:col-span-2">
+
+                            <label
+                                for="sumber"
+                                class="block text-sm font-medium text-gray-700 mb-2">
+
+                                Sumber Data
+                                <span class="text-red-500">*</span>
+
+                            </label>
+
+                            <select
+                                name="sumber"
+                                id="sumber"
+                                required
+                                class="w-full
+                                       px-4 py-3
+                                       bg-white
+                                       border border-gray-300
+                                       rounded-lg
+                                       text-sm
+                                       text-gray-700
+                                       focus:ring-2
+                                       focus:ring-[#164A3A]
+                                       focus:border-[#164A3A]">
+
+                                <option value="">
+                                    -- Pilih Sumber Data --
+                                </option>
+
+                                <option
+                                    value="manual_entry"
+                                    {{ old('sumber') == 'manual_entry' ? 'selected' : '' }}>
+
+                                    Manual Entry
+
+                                </option>
+
+                                <option
+                                    value="otomatis_iot"
+                                    {{ old('sumber') == 'otomatis_iot' ? 'selected' : '' }}>
+
+                                    Otomatis IoT
+
+                                </option>
+
+                                <option
+                                    value="data_manajemen"
+                                    {{ old('sumber') == 'data_manajemen' ? 'selected' : '' }}>
+
+                                    Data Manajemen
+
+                                </option>
+
+                                <option
+                                    value="tidak_ada_data"
+                                    {{ old('sumber') == 'tidak_ada_data' ? 'selected' : '' }}>
+
+                                    Tidak Ada Data
+
+                                </option>
+
+                            </select>
+
+                            @error('sumber')
+
+                                <p class="mt-1.5 text-sm text-red-600">
+                                    {{ $message }}
+                                </p>
+
+                            @enderror
+
+                        </div>
+
+                    </div>
 
                 </div>
 
 
-                {{-- SUMBER --}}
-                <div>
-
-                    <label
-                        for="sumber"
-                        class="block text-sm font-medium text-gray-700 mb-2"
-                    >
-                        Sumber Data
-                    </label>
-
-                    <select
-                        name="sumber"
-                        id="sumber"
-                        class="w-full rounded-lg border-gray-300 focus:border-blue-500 focus:ring-blue-500"
-                        required
-                    >
-
-                        <option value="">
-                            -- Pilih Sumber Data --
-                        </option>
-
-                        <option
-                            value="manual_entry"
-                            {{ old('sumber') == 'manual_entry' ? 'selected' : '' }}
-                        >
-                            Manual Entry
-                        </option>
-
-                        <option
-                            value="otomatis_iot"
-                            {{ old('sumber') == 'otomatis_iot' ? 'selected' : '' }}
-                        >
-                            Otomatis IoT
-                        </option>
-
-                        <option
-                            value="data_manajemen"
-                            {{ old('sumber') == 'data_manajemen' ? 'selected' : '' }}
-                        >
-                            Data Manajemen
-                        </option>
-
-                        <option
-                            value="tidak_ada_data"
-                            {{ old('sumber') == 'tidak_ada_data' ? 'selected' : '' }}
-                        >
-                            Tidak Ada Data
-                        </option>
-
-                    </select>
-
-                    @error('sumber')
-
-                        <p class="mt-1 text-sm text-red-600">
-                            {{ $message }}
-                        </p>
-
-                    @enderror
-
-                </div>
+                {{-- PEMBATAS --}}
+                <div class="border-t border-gray-100"></div>
 
 
+                {{-- ================================================= --}}
                 {{-- INFORMASI VERIFIKASI --}}
-                <div class="bg-yellow-50 border border-yellow-200 rounded-lg p-4">
+                {{-- ================================================= --}}
 
-                    <h3 class="text-sm font-semibold text-yellow-800">
-                        Informasi
-                    </h3>
+                <div
+                    class="flex items-start gap-4
+                           p-5
+                           bg-yellow-50
+                           border border-yellow-200
+                           rounded-xl">
 
-                    <p class="text-sm text-yellow-700 mt-1">
-                        Setelah data disimpan, status penimbangan akan otomatis menjadi
-                        <strong>Menunggu Verifikasi</strong>.
-                    </p>
+                    <div
+                        class="w-10 h-10
+                               rounded-full
+                               bg-yellow-100
+                               flex items-center
+                               justify-center
+                               flex-shrink-0">
+
+                        <svg
+                            class="w-5 h-5 text-yellow-600"
+                            fill="none"
+                            stroke="currentColor"
+                            viewBox="0 0 24 24">
+
+                            <path
+                                stroke-linecap="round"
+                                stroke-linejoin="round"
+                                stroke-width="2"
+                                d="M13 16h-1v-4h-1m1-4h.01M12 22a10 10 0 100-20 10 10 0 000 20z" />
+
+                        </svg>
+
+                    </div>
+
+                    <div>
+
+                        <h4 class="text-sm font-semibold text-yellow-800">
+                            Informasi Verifikasi
+                        </h4>
+
+                        <p class="text-sm text-yellow-700 mt-1 leading-relaxed">
+
+                            Setelah data disimpan, status penimbangan akan
+                            otomatis menjadi
+
+                            <strong>
+                                Menunggu Verifikasi
+                            </strong>.
+
+                            Data selanjutnya dapat diperiksa melalui menu
+                            Verifikasi.
+
+                        </p>
+
+                    </div>
 
                 </div>
 
             </div>
 
 
-            {{-- BUTTON --}}
-            <div class="px-6 py-4 bg-gray-50 border-t flex justify-end gap-3">
+            {{-- FOOTER FORM --}}
+            <div
+                class="px-6 py-4
+                       bg-gray-50
+                       border-t border-gray-200
+                       flex flex-col-reverse sm:flex-row
+                       sm:justify-end
+                       gap-3">
 
                 <a
                     href="{{ route('penimbangan.index') }}"
-                    class="px-5 py-2.5 bg-gray-200 text-gray-700 rounded-lg hover:bg-gray-300"
-                >
+                    class="inline-flex
+                           items-center
+                           justify-center
+                           px-5 py-2.5
+                           bg-white
+                           border border-gray-300
+                           text-gray-700
+                           text-sm font-medium
+                           rounded-lg
+                           hover:bg-gray-50
+                           transition">
+
                     Batal
+
                 </a>
 
                 <button
                     type="submit"
-                    class="px-5 py-2.5 bg-blue-600 text-white rounded-lg hover:bg-blue-700"
-                >
+                    class="inline-flex
+                           items-center
+                           justify-center
+                           gap-2
+                           px-5 py-2.5
+                           bg-[#164A3A]
+                           text-white
+                           text-sm font-medium
+                           rounded-lg
+                           hover:bg-[#0f382c]
+                           transition">
+
+                    <svg
+                        class="w-5 h-5"
+                        fill="none"
+                        stroke="currentColor"
+                        viewBox="0 0 24 24">
+
+                        <path
+                            stroke-linecap="round"
+                            stroke-linejoin="round"
+                            stroke-width="2"
+                            d="M5 13l4 4L19 7" />
+
+                    </svg>
+
                     Simpan Penimbangan
+
                 </button>
 
             </div>
