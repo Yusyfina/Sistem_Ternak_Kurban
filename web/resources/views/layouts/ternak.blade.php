@@ -287,6 +287,7 @@
 
             </a>
 
+            @if(in_array(auth()->user()->role, ['super_admin', 'admin_pusat']))
 
             {{-- PEMBELI --}}
             <a
@@ -384,7 +385,7 @@
                 <span>Pesanan</span>
 
             </a>
-
+        @endif
 
             {{-- ================================================= --}}
             {{-- MANAJEMEN SISTEM --}}
@@ -750,7 +751,7 @@
 
 
             {{-- SUCCESS --}}
-            @if(session('success'))
+            @if(session('success') && !request()->routeIs('verifikasi.index'))
 
                 <div
                     class="

@@ -167,6 +167,17 @@ Route::middleware(['auth'])->group(function () {
             'storeJenis'
         ])->name('pengaturan.jenis.store');
     });
+
+    // --------------------------------------------------
+    // Operator Dashboard Controller
+    // --------------------------------------------------
+        Route::middleware(['auth', 'role:operator'])->group(function () {
+        Route::get('/operator/dashboard', [
+            OperatorDashboardController::class,
+            'index',
+        ])->name('operator.dashboard');
+    });
+
 });
 
 
