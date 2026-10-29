@@ -51,7 +51,8 @@
 
         <a
             href="{{ route('lokasi.create') }}"
-            class="px-4 py-2 bg-blue-600 text-white rounded-lg hover:bg-blue-700"
+            class="px-4 py-2 bg-[#164A3A] text-white rounded-lg
+       hover:bg-[#0f382c] transition"
         >
             + Tambah Lokasi
         </a>

@@ -631,7 +631,7 @@
             {{-- USER --}}
             <div class="flex items-center gap-4">
 
-
+                
                 {{-- NOTIFICATION --}}
                 <button
                     type="button"
