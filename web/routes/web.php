@@ -42,6 +42,7 @@ Route::middleware('auth')->group(function () {
         'index',
     ])->name('dashboard');
 
+
     /*
     |--------------------------------------------------------------------------
     | Data Ternak
@@ -55,11 +56,12 @@ Route::middleware('auth')->group(function () {
         'delete',
     ])->name('ternak.delete');
 
+
     /*
     |--------------------------------------------------------------------------
     | Penimbangan
     |--------------------------------------------------------------------------
-    | Input penimbangan hanya untuk Super Admin, Admin Lokasi, dan Operator.
+    | Super Admin, Admin Lokasi, dan Operator dapat melakukan input.
     */
 
     Route::middleware('role:super_admin,admin_lokasi,operator')->group(function () {
@@ -69,24 +71,31 @@ Route::middleware('auth')->group(function () {
 
     });
 
+
     /*
     |--------------------------------------------------------------------------
     | Riwayat Penimbangan
     |--------------------------------------------------------------------------
     */
 
-    Route::middleware('role:super_admin,admin_pusat,admin_lokasi,operator,mandor')
-        ->get('/riwayat-penimbangan', [
+    Route::middleware(
+        'role:super_admin,admin_pusat,admin_lokasi,operator,mandor'
+    )->group(function () {
+
+        Route::get('/riwayat-penimbangan', [
             PenimbanganController::class,
             'riwayat',
         ])->name('penimbangan.riwayat');
+
+    });
+
 
     /*
     |--------------------------------------------------------------------------
     | Verifikasi Penimbangan
     |--------------------------------------------------------------------------
-    | Super Admin dan Admin Pusat boleh membuka halaman.
-    | Hanya Super Admin yang boleh menyimpan hasil verifikasi.
+    | Super Admin dan Admin Pusat dapat melihat halaman verifikasi.
+    | Hanya Super Admin yang dapat menyimpan hasil verifikasi.
     */
 
     Route::middleware('role:super_admin,admin_pusat')->group(function () {
@@ -107,6 +116,7 @@ Route::middleware('auth')->group(function () {
 
     });
 
+
     /*
     |--------------------------------------------------------------------------
     | Pembeli
@@ -114,6 +124,7 @@ Route::middleware('auth')->group(function () {
     */
 
     Route::resource('pembeli', PembeliController::class);
+
 
     /*
     |--------------------------------------------------------------------------
@@ -128,30 +139,84 @@ Route::middleware('auth')->group(function () {
         'pasangkan',
     ])->name('pesanan.pasangkan');
 
+
     /*
     |--------------------------------------------------------------------------
-    | Lokasi Peternakan
+    | Lokasi Peternakan - Super Admin
     |--------------------------------------------------------------------------
-    | Super Admin dan Admin Pusat boleh melihat data lokasi.
+    | Route create dan edit didaftarkan sebelum route parameter {lokasi}.
+    */
+
+    Route::middleware('role:super_admin')->group(function () {
+
+        Route::get('/lokasi/create', [
+            LokasiController::class,
+            'create',
+        ])->name('lokasi.create');
+
+        Route::post('/lokasi', [
+            LokasiController::class,
+            'store',
+        ])->name('lokasi.store');
+
+        Route::get('/lokasi/{lokasi}/edit', [
+            LokasiController::class,
+            'edit',
+        ])->name('lokasi.edit');
+
+        Route::put('/lokasi/{lokasi}', [
+            LokasiController::class,
+            'update',
+        ])->name('lokasi.update');
+
+        Route::patch('/lokasi/{lokasi}', [
+            LokasiController::class,
+            'update',
+        ]);
+
+        Route::delete('/lokasi/{lokasi}', [
+            LokasiController::class,
+            'destroy',
+        ])->name('lokasi.destroy');
+
+    });
+
+
+    /*
+    |--------------------------------------------------------------------------
+    | Lokasi Peternakan - Super Admin dan Admin Pusat
+    |--------------------------------------------------------------------------
+    | Kedua role hanya dapat melihat daftar dan detail lokasi.
     */
 
     Route::middleware('role:super_admin,admin_pusat')->group(function () {
 
-        Route::resource('lokasi', LokasiController::class)
-            ->only(['index', 'show']);
+        Route::get('/lokasi', [
+            LokasiController::class,
+            'index',
+        ])->name('lokasi.index');
 
-        /*
-         * Pengaturan dapat dibuka oleh kedua role.
-         */
+        Route::get('/lokasi/{lokasi}', [
+            LokasiController::class,
+            'show',
+        ])->name('lokasi.show');
+
+    });
+
+
+    /*
+    |--------------------------------------------------------------------------
+    | Pengaturan - Super Admin dan Admin Pusat
+    |--------------------------------------------------------------------------
+    | Keduanya dapat mengelola kategori harga.
+    */
+
+    Route::middleware('role:super_admin,admin_pusat')->group(function () {
 
         Route::get('/pengaturan', [
             PengaturanController::class,
             'index',
         ])->name('pengaturan.index');
-
-        /*
-         * Super Admin dan Admin Pusat boleh menambahkan kategori harga.
-         */
 
         Route::post('/pengaturan/kategori', [
             PengaturanController::class,
@@ -160,30 +225,14 @@ Route::middleware('auth')->group(function () {
 
     });
 
+
     /*
     |--------------------------------------------------------------------------
-    | Khusus Super Admin
+    | Pengaturan Jenis Ternak - Super Admin
     |--------------------------------------------------------------------------
     */
 
     Route::middleware('role:super_admin')->group(function () {
-
-        /*
-         * Pengelolaan lokasi selain melihat daftar dan detail.
-         */
-
-        Route::resource('lokasi', LokasiController::class)
-            ->except(['index', 'show']);
-
-        /*
-         * Pengelolaan pengguna hanya untuk Super Admin.
-         */
-
-        Route::resource('pengguna', PenggunaController::class);
-
-        /*
-         * Pengelolaan jenis ternak hanya untuk Super Admin.
-         */
 
         Route::post('/pengaturan/jenis', [
             PengaturanController::class,
@@ -191,6 +240,20 @@ Route::middleware('auth')->group(function () {
         ])->name('pengaturan.jenis.store');
 
     });
+
+
+    /*
+    |--------------------------------------------------------------------------
+    | Pengguna - Super Admin
+    |--------------------------------------------------------------------------
+    */
+
+    Route::middleware('role:super_admin')->group(function () {
+
+        Route::resource('pengguna', PenggunaController::class);
+
+    });
+
 
     /*
     |--------------------------------------------------------------------------
@@ -213,6 +276,7 @@ Route::middleware('auth')->group(function () {
         'destroy',
     ])->name('profile.destroy');
 
+
     /*
     |--------------------------------------------------------------------------
     | Dashboard Operator
@@ -230,10 +294,11 @@ Route::middleware('auth')->group(function () {
 
 });
 
+
 /*
 |--------------------------------------------------------------------------
 | Route Authentication Breeze
 |--------------------------------------------------------------------------
 */
 
-require __DIR__.'/auth.php';
+require __DIR__ . '/auth.php';

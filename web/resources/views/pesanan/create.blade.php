@@ -228,9 +228,8 @@
 
                 <button
                     type="submit"
-                    class="px-5 py-2.5 bg-blue-600 text-white
-                           rounded-lg hover:bg-blue-700
-                           transition"
+                    class="px-4 py-2 bg-[#164A3A] text-white rounded-lg
+                    hover:bg-[#0f382c] transition"
                 >
                     Simpan Pesanan
                 </button>
