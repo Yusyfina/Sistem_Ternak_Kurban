@@ -1,8 +1,5 @@
 <?php
-
 namespace App\Models;
-
-// use Illuminate\Contracts\Auth\MustVerifyEmail;
 use Database\Factories\UserFactory;
 use Illuminate\Database\Eloquent\Attributes\Fillable;
 use Illuminate\Database\Eloquent\Attributes\Hidden;
@@ -12,12 +9,38 @@ use Illuminate\Notifications\Notifiable;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
 use Illuminate\Database\Eloquent\Relations\HasMany;
 
-#[Fillable(['name', 'email', 'password'])]
+#[Fillable([
+    'name',
+    'kode',
+    'email',
+    'password',
+    'role',
+    'lokasi_id',
+    'status',
+])]
 #[Hidden(['password', 'remember_token'])]
 class User extends Authenticatable
 {
-    /** @use HasFactory<UserFactory> */
+    /**
+     * @use HasFactory<UserFactory>
+     */
     use HasFactory, Notifiable;
+
+    /**
+     * Role yang boleh melihat data semua lokasi.
+     */
+    public const ROLE_GLOBAL = [
+        'super_admin',
+        'admin_pusat',
+    ];
+
+    /**
+     * Memeriksa apakah user boleh melihat semua lokasi.
+     */
+    public function bolehLihatSemuaLokasi(): bool
+    {
+        return in_array($this->role, self::ROLE_GLOBAL, true);
+    }
 
     /**
      * Get the attributes that should be cast.
@@ -32,6 +55,9 @@ class User extends Authenticatable
         ];
     }
 
+    /**
+     * Relasi ke lokasi peternakan.
+     */
     public function lokasi(): BelongsTo
     {
         return $this->belongsTo(
@@ -40,6 +66,9 @@ class User extends Authenticatable
         );
     }
 
+    /**
+     * Relasi penimbangan yang dilakukan operator.
+     */
     public function penimbangan(): HasMany
     {
         return $this->hasMany(
@@ -48,6 +77,9 @@ class User extends Authenticatable
         );
     }
 
+    /**
+     * Relasi penimbangan yang diverifikasi user.
+     */
     public function verifikasiPenimbangan(): HasMany
     {
         return $this->hasMany(
