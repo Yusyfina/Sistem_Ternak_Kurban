@@ -311,6 +311,13 @@
                             class="px-5 py-4 text-left
                                    font-semibold text-gray-600
                                    whitespace-nowrap">
+                            Tanggal
+                        </th>
+
+                        <th
+                            class="px-5 py-4 text-left
+                                   font-semibold text-gray-600
+                                   whitespace-nowrap">
                             Jenis
                         </th>
 
@@ -377,6 +384,28 @@
                                     {{ $item->ternak->kode_ternak ?? '-' }}
 
                                 </div>
+
+                            </td>
+
+
+                            {{-- TANGGAL --}}
+                            <td class="px-5 py-4 whitespace-nowrap">
+
+                                @if ($item->ditimbang_at)
+
+                                    <div class="text-sm text-gray-800">
+                                        {{ $item->ditimbang_at->format('d/m/Y') }}
+                                    </div>
+
+                                    <div class="text-xs text-gray-400 mt-1">
+                                        {{ $item->ditimbang_at->format('H:i:s') }} WIB
+                                    </div>
+
+                                @else
+
+                                    <span class="text-gray-400">-</span>
+
+                                @endif
 
                             </td>
 
@@ -607,7 +636,7 @@
                         <tr>
 
                             <td
-                                colspan="8"
+                                colspan="9"
                                 class="px-5 py-14 text-center">
 
                                 <div

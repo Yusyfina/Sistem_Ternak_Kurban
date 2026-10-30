@@ -275,6 +275,23 @@
 
                 </div>
 
+
+                <div class="border-t border-gray-100 pt-5">
+
+                    <p class="text-sm text-gray-500">
+                        Tanggal Terdaftar
+                    </p>
+
+                    <p class="mt-1 text-sm font-semibold text-gray-900">
+                        {{ $ternak->created_at->format('d/m/Y') }}
+                    </p>
+
+                    <p class="text-xs text-gray-400 mt-0.5">
+                        {{ $ternak->created_at->format('H:i:s') }} WIB
+                    </p>
+
+                </div>
+
             </div>
 
         </div>

@@ -22,7 +22,9 @@ class Pesanan extends Model
     ];
 
     protected $casts = [
-        'harga' => 'decimal:2',
+        'harga'      => 'decimal:2',
+        'created_at' => 'datetime',
+        'updated_at' => 'datetime',
     ];
 
     /**

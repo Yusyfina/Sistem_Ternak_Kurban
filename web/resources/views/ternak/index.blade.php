@@ -314,6 +314,20 @@
                                 @endif
                             </td>
 
+                            {{-- DITAMBAHKAN --}}
+                            <td class="px-5 py-4">
+
+                                <div class="text-sm text-gray-700">
+                                    {{ $item->created_at->format('d/m/Y') }}
+                                </div>
+
+                                <div class="text-xs text-gray-400 mt-1">
+                                    {{ $item->created_at->format('H:i:s') }} WIB
+                                </div>
+
+                            </td>
+
+
                             {{-- AKSI --}}
                             <td class="px-5 py-4">
                                 <div class="flex items-center justify-end gap-2">
