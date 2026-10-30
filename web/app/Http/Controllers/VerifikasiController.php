@@ -17,6 +17,7 @@ class VerifikasiController extends Controller
                 'ternak.lokasi',
                 'operator',
             ])
+            ->untukUser(auth()->user())
             ->where('status_verifikasi', 'menunggu')
             ->latest('ditimbang_at')
             ->paginate(10);

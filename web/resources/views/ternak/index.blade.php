@@ -1,6 +1,8 @@
+
 @extends('layouts.ternak')
 
 @section('title', 'Data Ternak')
+
 @section('page-title', 'Data Ternak')
 
 @section('content')
@@ -167,54 +169,64 @@
             </p>
         </div>
 
-        {{-- TABEL --}}
-        <div class="overflow-x-auto">
-            <table class="w-full text-sm text-left">
+        {{-- TABEL DATA TERNAK --}}
+        <div class="w-full overflow-hidden">
+
+            <table class="w-full table-fixed text-xs text-left">
+
+                {{-- PENGATURAN LEBAR KOLOM --}}
+                <colgroup>
+                    <col style="width: 4%">
+                    <col style="width: 9%">
+                    <col style="width: 8%">
+                    <col style="width: 11%">
+                    <col style="width: 6%">
+                    <col style="width: 9%">
+                    <col style="width: 7%">
+                    <col style="width: 13%">
+                    <col style="width: 13%">
+                    <col style="width: 20%">
+                </colgroup>
 
                 <thead class="bg-gray-50 border-b border-gray-200">
                     <tr>
-                        <th class="px-4 py-4 text-center font-semibold
-                                   text-gray-600 whitespace-nowrap">
+                        <th class="px-2 py-3 text-center font-semibold text-gray-600">
                             No.
                         </th>
 
-                        <th class="px-5 py-4 font-semibold text-gray-600
-                                   whitespace-nowrap">
+                        <th class="px-2 py-3 font-semibold text-gray-600">
                             KODE TERNAK
                         </th>
 
-                        <th class="px-5 py-4 font-semibold text-gray-600
-                                   whitespace-nowrap">
+                        <th class="px-2 py-3 font-semibold text-gray-600">
                             JENIS
                         </th>
 
-                        <th class="px-5 py-4 font-semibold text-gray-600
-                                   whitespace-nowrap">
+                        <th class="px-2 py-3 font-semibold text-gray-600">
                             LOKASI
                         </th>
 
-                        <th class="px-5 py-4 font-semibold text-gray-600
-                                   whitespace-nowrap">
+                        <th class="px-2 py-3 font-semibold text-gray-600">
                             RFID
                         </th>
 
-                        <th class="px-5 py-4 font-semibold text-gray-600
-                                   whitespace-nowrap">
+                        <th class="px-2 py-3 font-semibold text-gray-600">
                             BOBOT TERAKHIR
                         </th>
 
-                        <th class="px-5 py-4 font-semibold text-gray-600
-                                   whitespace-nowrap">
+                        <th class="px-2 py-3 font-semibold text-gray-600">
                             STATUS
                         </th>
 
-                        <th class="px-5 py-4 font-semibold text-gray-600
-                                   whitespace-nowrap">
-                            DITAMBAHKAN PADA
+                        <th class="px-2 py-3 font-semibold text-gray-600">
+                            DIBUAT (WIB)
                         </th>
 
-                        <th class="px-5 py-4 text-right font-semibold
-                                   text-gray-600 whitespace-nowrap">
+                        <th class="px-2 py-3 font-semibold text-gray-600">
+                            DIUBAH (WIB)
+                        </th>
+
+                        <th class="px-2 py-3 text-center font-semibold text-gray-600">
                             AKSI
                         </th>
                     </tr>
@@ -230,44 +242,54 @@
                             data-status="{{ strtolower($item->status ?? '') }}"
                             data-lokasi="{{ strtolower($item->lokasi?->nama ?? '') }}">
 
-                            {{-- NOMOR URUT --}}
-                            <td class="px-4 py-4 text-center
-                                       text-gray-500 whitespace-nowrap">
+                            {{-- NOMOR --}}
+                            <td class="px-2 py-3 text-center text-gray-600">
                                 {{ ($ternak->firstItem() ?? 1) + $loop->index }}
                             </td>
 
                             {{-- KODE TERNAK --}}
-                            <td class="px-5 py-4 whitespace-nowrap">
-                                <div class="font-semibold text-gray-900">
-                                    {{ $item->kode_ternak ?? '-' }}
-                                </div>
+                            <td class="px-2 py-3 font-semibold text-gray-900 break-words">
+                                {{ $item->kode_ternak ?? '-' }}
                             </td>
 
                             {{-- JENIS --}}
-                            <td class="px-5 py-4">
-                                <div class="font-medium text-gray-800">
+                            <td class="px-2 py-3 text-gray-800 break-words">
+                                <div class="font-medium">
                                     {{ $item->jenisTernak?->nama_jenis ?? '-' }}
                                 </div>
 
-                                <div class="text-xs text-gray-400 mt-1">
+                                <div class="text-[11px] text-gray-400 mt-1">
                                     {{ $item->jenisTernak?->spesies ?? '-' }}
                                 </div>
                             </td>
 
                             {{-- LOKASI --}}
-                            <td class="px-5 py-4 text-gray-600 whitespace-nowrap">
-                                {{ $item->lokasi?->nama ?? '-' }}
+                            <td class="px-2 py-3 text-gray-600 text-xs break-words">
+                                @php
+                                    $namaLokasi = $item->lokasi?->nama ?? '-';
+                                    $bagianLokasi = preg_split('/\s+/', trim($namaLokasi), 2);
+                                @endphp
+
+                                <div>
+                                    {{ $bagianLokasi[0] }}
+                                </div>
+
+                                @if(isset($bagianLokasi[1]))
+                                    <div>
+                                        {{ $bagianLokasi[1] }}
+                                    </div>
+                                @endif
                             </td>
 
                             {{-- RFID --}}
-                            <td class="px-5 py-4 text-gray-500 whitespace-nowrap">
+                            <td class="px-2 py-3 text-gray-600 break-words">
                                 {{ $item->kode_rfid ?: '-' }}
                             </td>
 
                             {{-- BOBOT TERAKHIR --}}
-                            <td class="px-5 py-4 whitespace-nowrap">
+                            <td class="px-2 py-3 text-gray-800">
                                 @if($item->bobot_terakhir !== null)
-                                    <span class="font-semibold text-gray-800">
+                                    <span class="font-semibold">
                                         {{ number_format($item->bobot_terakhir, 1, ',', '.') }}
                                     </span>
                                     <span class="text-gray-500">kg</span>
@@ -277,7 +299,7 @@
                             </td>
 
                             {{-- STATUS --}}
-                            <td class="px-5 py-4 whitespace-nowrap">
+                            <td class="px-2 py-3">
                                 @php
                                     $statusClass = match($item->status) {
                                         'tersedia' => 'bg-green-100 text-green-700',
@@ -296,21 +318,54 @@
                                     };
                                 @endphp
 
-                                <span class="inline-flex items-center px-3 py-1
-                                             rounded-full text-xs font-medium
+                                <span class="inline-flex items-center
+                                             px-2 py-1 rounded-full
+                                             text-[11px] font-medium
+                                             whitespace-nowrap
                                              {{ $statusClass }}">
                                     {{ $statusLabel }}
                                 </span>
                             </td>
 
-                            {{-- TIMESTAMP PEMBUATAN --}}
-                            <td class="px-5 py-4 text-gray-600 whitespace-nowrap">
+                            {{-- DITAMBAHKAN --}}
+                            <td class="px-2 py-3 text-gray-700 text-xs">
                                 @if($item->created_at)
-                                    <span title="{{ $item->created_at->format('d-m-Y H:i:s') }}">
-                                        {{ $item->created_at->format('d-m-Y H:i:s') }}
-                                    </span>
+                                    @php
+                                        $waktuDitambahkan = $item->created_at
+                                            ->copy()
+                                            ->timezone('Asia/Jakarta');
+                                    @endphp
+
+                                    <div class="whitespace-nowrap">
+                                        {{ $waktuDitambahkan->format('d/m/Y') }}
+                                    </div>
+
+                                    <div class="whitespace-nowrap mt-1">
+                                        {{ $waktuDitambahkan->format('H.i.s') }} WIB
+                                    </div>
                                 @else
-                                    <span class="text-gray-400">-</span>
+                                    -
+                                @endif
+                            </td>
+
+                            {{-- TERAKHIR DIUBAH --}}
+                            <td class="px-2 py-3 text-gray-700 text-xs">
+                                @if($item->updated_at)
+                                    @php
+                                        $waktuDiubah = $item->updated_at
+                                            ->copy()
+                                            ->timezone('Asia/Jakarta');
+                                    @endphp
+
+                                    <div class="whitespace-nowrap">
+                                        {{ $waktuDiubah->format('d/m/Y') }}
+                                    </div>
+
+                                    <div class="whitespace-nowrap mt-1">
+                                        {{ $waktuDiubah->format('H.i.s') }} WIB
+                                    </div>
+                                @else
+                                    -
                                 @endif
                             </td>
 
@@ -329,24 +384,24 @@
 
 
                             {{-- AKSI --}}
-                            <td class="px-5 py-4">
-                                <div class="flex items-center justify-end gap-2">
+                            <td class="px-2 py-3">
+                                <div class="flex items-center justify-center gap-1">
 
                                     {{-- DETAIL --}}
                                     <a href="{{ route('ternak.show', $item) }}"
-                                       class="px-3 py-2 text-xs font-medium
-                                              text-gray-700 bg-gray-100
-                                              rounded-lg hover:bg-gray-200
-                                              transition">
+                                       class="px-2 py-1.5 text-[11px]
+                                              font-medium text-gray-700
+                                              bg-gray-100 rounded-md
+                                              hover:bg-gray-200 whitespace-nowrap">
                                         Detail
                                     </a>
 
                                     {{-- EDIT --}}
                                     <a href="{{ route('ternak.edit', $item) }}"
-                                       class="px-3 py-2 text-xs font-medium
-                                              text-white bg-[#164A3A]
-                                              rounded-lg hover:bg-[#0f382c]
-                                              transition">
+                                       class="px-2 py-1.5 text-[11px]
+                                              font-medium text-white
+                                              bg-[#164A3A] rounded-md
+                                              hover:bg-[#0f382c] whitespace-nowrap">
                                         Edit
                                     </a>
 
@@ -356,10 +411,10 @@
                                                 {{ $item->id }},
                                                 @js($item->kode_ternak)
                                             )"
-                                            class="px-3 py-2 text-xs font-medium
-                                                   text-red-600 bg-red-50
-                                                   rounded-lg hover:bg-red-100
-                                                   transition">
+                                            class="px-2 py-1.5 text-[11px]
+                                                   font-medium text-red-600
+                                                   bg-red-50 rounded-md
+                                                   hover:bg-red-100 whitespace-nowrap">
                                         Hapus
                                     </button>
 
@@ -371,7 +426,7 @@
                     @empty
 
                         <tr>
-                            <td colspan="9"
+                            <td colspan="10"
                                 class="px-5 py-12 text-center">
 
                                 <div class="flex flex-col items-center">
@@ -566,6 +621,7 @@
         searchInput.addEventListener('input', filterTernak);
         filterStatus.addEventListener('change', filterTernak);
         filterLokasi.addEventListener('change', filterTernak);
+
     });
 </script>
 

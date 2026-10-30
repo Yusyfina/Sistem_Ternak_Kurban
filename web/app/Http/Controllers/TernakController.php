@@ -19,6 +19,7 @@ class TernakController extends Controller
             'jenisTernak',
             'lokasi',
         ])
+            ->untukUser(auth()->user())
             ->latest()
             ->paginate(10);
 

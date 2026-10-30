@@ -12,6 +12,7 @@ use App\Http\Controllers\TernakController;
 use App\Http\Controllers\VerifikasiController;
 use App\Http\Controllers\OperatorDashboardController;
 use Illuminate\Support\Facades\Route;
+use App\Http\Controllers\LaporanController;
 
 /*
 |--------------------------------------------------------------------------
@@ -254,7 +255,12 @@ Route::middleware('auth')->group(function () {
 
     });
 
+    Route::get('/laporan', [LaporanController::class, 'index'])
+    ->name('laporan.index');
 
+    Route::get('/laporan/{modul}/{format}', [LaporanController::class, 'export'])
+        ->where('format', 'xlsx|csv|pdf|docx')
+        ->name('laporan.export');
     /*
     |--------------------------------------------------------------------------
     | Profil Pengguna

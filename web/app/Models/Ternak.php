@@ -6,6 +6,7 @@ use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
 use Illuminate\Database\Eloquent\Relations\HasMany;
+use Illuminate\Database\Eloquent\Builder;
 
 class Ternak extends Model
 {
@@ -68,4 +69,24 @@ class Ternak extends Model
     {
         return "{$this->kode_ternak} · {$this->lokasi->nama}";
     }
+
+    /**
+     * Membatasi data ternak berdasarkan lokasi user.
+     */
+    public function scopeUntukUser(Builder $query, User $user): Builder
+    {
+        // Super Admin dan Admin Pusat dapat melihat semua lokasi.
+        if ($user->bolehLihatSemuaLokasi()) {
+            return $query;
+        }
+
+        // Jika user tidak memiliki lokasi, jangan tampilkan data.
+        if (! $user->lokasi_id) {
+            return $query->whereRaw('1 = 0');
+        }
+
+        // User hanya dapat melihat ternak dari lokasi miliknya.
+        return $query->where('lokasi_id', $user->lokasi_id);
+    }
+    
 }

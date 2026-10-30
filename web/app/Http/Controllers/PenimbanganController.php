@@ -18,6 +18,7 @@ class PenimbanganController extends Controller
             'ternak.lokasi',
             'operator',
         ])
+            ->untukUser(auth()->user())
             ->latest('ditimbang_at')
             ->paginate(10);
 
@@ -125,6 +126,7 @@ class PenimbanganController extends Controller
             'operator',
             'verifikator',
         ])
+            ->untukUser(auth()->user())
             ->latest('ditimbang_at')
             ->paginate(15);
 
