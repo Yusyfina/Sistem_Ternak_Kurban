@@ -166,6 +166,8 @@
 
 
             {{-- PENIMBANGAN --}}
+            {{-- PENIMBANGAN (disembunyikan untuk admin pusat) --}}
+            @if(auth()->user()->role !== 'admin_pusat')
             <a
                 href="{{ route('penimbangan.index') }}"
                 class="
@@ -200,6 +202,7 @@
                 <span>Penimbangan</span>
 
             </a>
+            @endif
 
 
             {{-- RIWAYAT --}}
@@ -446,6 +449,8 @@
 
 
                 {{-- PENGGUNA --}}
+                {{-- PENGGUNA (hanya super admin) --}}
+                @if(auth()->user()->role === 'super_admin')
                 <a
                     href="{{ route('pengguna.index') }}"
                     class="
@@ -492,6 +497,7 @@
                     <span>Pengguna</span>
 
                 </a>
+                @endif
 
 
                 {{-- PENGATURAN --}}
@@ -625,7 +631,7 @@
             {{-- USER --}}
             <div class="flex items-center gap-4">
 
-
+                
                 {{-- NOTIFICATION --}}
                 <button
                     type="button"

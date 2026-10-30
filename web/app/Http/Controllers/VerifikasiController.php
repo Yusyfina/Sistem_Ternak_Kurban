@@ -8,14 +8,15 @@ use Illuminate\Http\Request;
 class VerifikasiController extends Controller
 {
     /**
-     * Daftar penimbangan yang menunggu verifikasi.
+     * Menampilkan data penimbangan yang menunggu verifikasi.
      */
     public function index()
     {
         $penimbangan = Penimbangan::with([
-            'ternak',
-            'operator',
-        ])
+                'ternak.jenisTernak',
+                'ternak.lokasi',
+                'operator',
+            ])
             ->where('status_verifikasi', 'menunggu')
             ->latest('ditimbang_at')
             ->paginate(10);
@@ -26,23 +27,24 @@ class VerifikasiController extends Controller
     /**
      * Menyimpan hasil verifikasi.
      */
-    public function store(
-        Request $request,
-        Penimbangan $penimbangan
-    ) {
+    public function store(Request $request, Penimbangan $penimbangan)
+    {
         $validated = $request->validate([
             'status_verifikasi' => [
                 'required',
-                'in:valid,kurang_akurat,tidak_valid'
+                'in:valid,kurang_akurat,tidak_valid',
             ],
-            'catatan_verifikasi' => ['nullable', 'string'],
+            'catatan_verifikasi' => [
+                'nullable',
+                'string',
+            ],
         ]);
 
         $penimbangan->update([
-            'status_verifikasi' => $validated['status_verifikasi'],
+            'status_verifikasi'  => $validated['status_verifikasi'],
             'catatan_verifikasi' => $validated['catatan_verifikasi'] ?? null,
-            'diverifikasi_oleh' => auth()->id(),
-            'diverifikasi_at' => now(),
+            'diverifikasi_oleh'  => auth()->id(),
+            'diverifikasi_at'    => now(),
         ]);
 
         return redirect()

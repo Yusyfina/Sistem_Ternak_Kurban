@@ -10,179 +10,295 @@ use App\Http\Controllers\PesananController;
 use App\Http\Controllers\ProfileController;
 use App\Http\Controllers\TernakController;
 use App\Http\Controllers\VerifikasiController;
+use App\Http\Controllers\OperatorDashboardController;
 use Illuminate\Support\Facades\Route;
 
 /*
 |--------------------------------------------------------------------------
-| Web Routes
+| Halaman Awal
 |--------------------------------------------------------------------------
-|
-| Semua route utama Sistem Ternak Kurban berada di file ini.
-|
 */
-
-
-// ==========================================================
-// HALAMAN AWAL
-// ==========================================================
 
 Route::get('/', function () {
     return view('welcome');
 });
 
+/*
+|--------------------------------------------------------------------------
+| Route yang Membutuhkan Login
+|--------------------------------------------------------------------------
+*/
 
-// ==========================================================
-// ROUTE YANG MEMBUTUHKAN LOGIN
-// ==========================================================
+Route::middleware('auth')->group(function () {
 
-Route::middleware(['auth'])->group(function () {
-
-    // ======================================================
-    // DASHBOARD
-    // ======================================================
+    /*
+    |--------------------------------------------------------------------------
+    | Dashboard
+    |--------------------------------------------------------------------------
+    */
 
     Route::get('/dashboard', [
         DashboardController::class,
-        'index'
+        'index',
     ])->name('dashboard');
 
 
-    // ======================================================
-    // DATA TERNAK
-    // ======================================================
+    /*
+    |--------------------------------------------------------------------------
+    | Data Ternak
+    |--------------------------------------------------------------------------
+    */
 
     Route::resource('ternak', TernakController::class);
+
     Route::get('/ternak/{ternak}/delete', [
         TernakController::class,
-        'delete'
+        'delete',
     ])->name('ternak.delete');
 
-    // ======================================================
-    // PENIMBANGAN
-    // ======================================================
 
-    Route::resource('penimbangan', PenimbanganController::class)
-        ->only([
+    /*
+    |--------------------------------------------------------------------------
+    | Penimbangan
+    |--------------------------------------------------------------------------
+    | Super Admin, Admin Lokasi, dan Operator dapat melakukan input.
+    */
+
+    Route::middleware('role:super_admin,admin_lokasi,operator')->group(function () {
+
+        Route::resource('penimbangan', PenimbanganController::class)
+            ->only(['index', 'create', 'store']);
+
+    });
+
+
+    /*
+    |--------------------------------------------------------------------------
+    | Riwayat Penimbangan
+    |--------------------------------------------------------------------------
+    */
+
+    Route::middleware(
+        'role:super_admin,admin_pusat,admin_lokasi,operator,mandor'
+    )->group(function () {
+
+        Route::get('/riwayat-penimbangan', [
+            PenimbanganController::class,
+            'riwayat',
+        ])->name('penimbangan.riwayat');
+
+    });
+
+
+    /*
+    |--------------------------------------------------------------------------
+    | Verifikasi Penimbangan
+    |--------------------------------------------------------------------------
+    | Super Admin dan Admin Pusat dapat melihat halaman verifikasi.
+    | Hanya Super Admin yang dapat menyimpan hasil verifikasi.
+    */
+
+    Route::middleware('role:super_admin,admin_pusat')->group(function () {
+
+        Route::get('/verifikasi', [
+            VerifikasiController::class,
             'index',
-            'create',
-            'store'
-        ]);
+        ])->name('verifikasi.index');
 
-    Route::get('/riwayat-penimbangan', [
-        PenimbanganController::class,
-        'riwayat'
-    ])->name('penimbangan.riwayat');
+    });
 
+    Route::middleware('role:super_admin')->group(function () {
 
-    // ======================================================
-    // VERIFIKASI PENIMBANGAN
-    // ======================================================
+        Route::post('/verifikasi/{penimbangan}', [
+            VerifikasiController::class,
+            'store',
+        ])->name('verifikasi.store');
 
-    Route::get('/verifikasi', [
-        VerifikasiController::class,
-        'index'
-    ])->name('verifikasi.index');
-
-    Route::post('/verifikasi/{penimbangan}', [
-        VerifikasiController::class,
-        'store'
-    ])->name('verifikasi.store');
+    });
 
 
-    // ======================================================
-    // PEMBELI
-    // ======================================================
+    /*
+    |--------------------------------------------------------------------------
+    | Pembeli
+    |--------------------------------------------------------------------------
+    */
 
     Route::resource('pembeli', PembeliController::class);
 
 
-    // ======================================================
-    // PESANAN
-    // ======================================================
+    /*
+    |--------------------------------------------------------------------------
+    | Pesanan
+    |--------------------------------------------------------------------------
+    */
 
     Route::resource('pesanan', PesananController::class);
 
     Route::post('/pesanan/{pesanan}/pasangkan', [
         PesananController::class,
-        'pasangkan'
+        'pasangkan',
     ])->name('pesanan.pasangkan');
 
 
-    // ======================================================
-    // PROFILE USER
-    // ======================================================
+    /*
+    |--------------------------------------------------------------------------
+    | Lokasi Peternakan - Super Admin
+    |--------------------------------------------------------------------------
+    | Route create dan edit didaftarkan sebelum route parameter {lokasi}.
+    */
 
-    Route::get('/profile', [
-        ProfileController::class,
-        'edit'
-    ])->name('profile.edit');
+    Route::middleware('role:super_admin')->group(function () {
 
-    Route::patch('/profile', [
-        ProfileController::class,
-        'update'
-    ])->name('profile.update');
+        Route::get('/lokasi/create', [
+            LokasiController::class,
+            'create',
+        ])->name('lokasi.create');
 
-    Route::delete('/profile', [
-        ProfileController::class,
-        'destroy'
-    ])->name('profile.destroy');
+        Route::post('/lokasi', [
+            LokasiController::class,
+            'store',
+        ])->name('lokasi.store');
+
+        Route::get('/lokasi/{lokasi}/edit', [
+            LokasiController::class,
+            'edit',
+        ])->name('lokasi.edit');
+
+        Route::put('/lokasi/{lokasi}', [
+            LokasiController::class,
+            'update',
+        ])->name('lokasi.update');
+
+        Route::patch('/lokasi/{lokasi}', [
+            LokasiController::class,
+            'update',
+        ]);
+
+        Route::delete('/lokasi/{lokasi}', [
+            LokasiController::class,
+            'destroy',
+        ])->name('lokasi.destroy');
+
+    });
 
 
-    // ======================================================
-    // KHUSUS SUPER ADMIN & ADMIN PUSAT
-    // ======================================================
+    /*
+    |--------------------------------------------------------------------------
+    | Lokasi Peternakan - Super Admin dan Admin Pusat
+    |--------------------------------------------------------------------------
+    | Kedua role hanya dapat melihat daftar dan detail lokasi.
+    */
 
     Route::middleware('role:super_admin,admin_pusat')->group(function () {
 
-        // --------------------------------------------------
-        // DATA LOKASI PETERNAKAN
-        // --------------------------------------------------
+        Route::get('/lokasi', [
+            LokasiController::class,
+            'index',
+        ])->name('lokasi.index');
 
-        Route::resource('lokasi', LokasiController::class);
+        Route::get('/lokasi/{lokasi}', [
+            LokasiController::class,
+            'show',
+        ])->name('lokasi.show');
+
+    });
 
 
-        // --------------------------------------------------
-        // DATA PENGGUNA
-        // --------------------------------------------------
+    /*
+    |--------------------------------------------------------------------------
+    | Pengaturan - Super Admin dan Admin Pusat
+    |--------------------------------------------------------------------------
+    | Keduanya dapat mengelola kategori harga.
+    */
 
-        Route::resource('pengguna', PenggunaController::class);
-
-
-        // --------------------------------------------------
-        // PENGATURAN
-        // --------------------------------------------------
+    Route::middleware('role:super_admin,admin_pusat')->group(function () {
 
         Route::get('/pengaturan', [
             PengaturanController::class,
-            'index'
+            'index',
         ])->name('pengaturan.index');
 
         Route::post('/pengaturan/kategori', [
             PengaturanController::class,
-            'storeKategori'
+            'storeKategori',
         ])->name('pengaturan.kategori.store');
+
+    });
+
+
+    /*
+    |--------------------------------------------------------------------------
+    | Pengaturan Jenis Ternak - Super Admin
+    |--------------------------------------------------------------------------
+    */
+
+    Route::middleware('role:super_admin')->group(function () {
 
         Route::post('/pengaturan/jenis', [
             PengaturanController::class,
-            'storeJenis'
+            'storeJenis',
         ])->name('pengaturan.jenis.store');
+
     });
 
-    // --------------------------------------------------
-    // Operator Dashboard Controller
-    // --------------------------------------------------
-        Route::middleware(['auth', 'role:operator'])->group(function () {
+
+    /*
+    |--------------------------------------------------------------------------
+    | Pengguna - Super Admin
+    |--------------------------------------------------------------------------
+    */
+
+    Route::middleware('role:super_admin')->group(function () {
+
+        Route::resource('pengguna', PenggunaController::class);
+
+    });
+
+
+    /*
+    |--------------------------------------------------------------------------
+    | Profil Pengguna
+    |--------------------------------------------------------------------------
+    */
+
+    Route::get('/profile', [
+        ProfileController::class,
+        'edit',
+    ])->name('profile.edit');
+
+    Route::patch('/profile', [
+        ProfileController::class,
+        'update',
+    ])->name('profile.update');
+
+    Route::delete('/profile', [
+        ProfileController::class,
+        'destroy',
+    ])->name('profile.destroy');
+
+
+    /*
+    |--------------------------------------------------------------------------
+    | Dashboard Operator
+    |--------------------------------------------------------------------------
+    */
+
+    Route::middleware('role:operator')->group(function () {
+
         Route::get('/operator/dashboard', [
             OperatorDashboardController::class,
             'index',
         ])->name('operator.dashboard');
+
     });
 
 });
 
 
-// ==========================================================
-// ROUTE AUTH BAWAAN BREEZE
-// ==========================================================
+/*
+|--------------------------------------------------------------------------
+| Route Authentication Breeze
+|--------------------------------------------------------------------------
+*/
 
-require __DIR__.'/auth.php';
+require __DIR__ . '/auth.php';
