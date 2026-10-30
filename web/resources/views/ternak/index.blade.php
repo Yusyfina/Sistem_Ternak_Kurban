@@ -280,6 +280,10 @@
                             STATUS
                         </th>
 
+                        <th class="px-5 py-4 text-left font-semibold text-gray-600">
+                            DITAMBAHKAN
+                        </th>
+
                         <th class="px-5 py-4 text-right font-semibold text-gray-600">
                             AKSI
                         </th>
@@ -423,6 +427,20 @@
                             </td>
 
 
+                            {{-- DITAMBAHKAN --}}
+                            <td class="px-5 py-4">
+
+                                <div class="text-sm text-gray-700">
+                                    {{ $item->created_at->format('d/m/Y') }}
+                                </div>
+
+                                <div class="text-xs text-gray-400 mt-1">
+                                    {{ $item->created_at->format('H:i:s') }} WIB
+                                </div>
+
+                            </td>
+
+
                             {{-- AKSI --}}
                             <td class="px-5 py-4">
 
@@ -490,7 +508,7 @@
                         <tr>
 
                             <td
-                                colspan="7"
+                                colspan="8"
                                 class="px-5 py-12 text-center">
 
                                 <div class="flex flex-col items-center">

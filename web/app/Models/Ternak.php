@@ -24,6 +24,8 @@ class Ternak extends Model
 
     protected $casts = [
         'bobot_terakhir' => 'decimal:1',
+        'created_at'     => 'datetime',
+        'updated_at'     => 'datetime',
     ];
 
     /**

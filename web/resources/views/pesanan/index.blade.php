@@ -106,6 +106,10 @@
                         No. Pesanan
                     </th>
 
+                    <th class="px-5 py-3 text-left font-semibold text-gray-600 whitespace-nowrap">
+                        Tanggal
+                    </th>
+
                     <th class="px-5 py-3 text-left font-semibold text-gray-600">
                         Pembeli
                     </th>
@@ -154,6 +158,20 @@
 
                             <div class="font-semibold text-gray-800">
                                 {{ $item->no_pesanan }}
+                            </div>
+
+                        </td>
+
+
+                        {{-- TANGGAL PESANAN --}}
+                        <td class="px-5 py-4 whitespace-nowrap">
+
+                            <div class="text-sm text-gray-800">
+                                {{ $item->created_at->format('d/m/Y') }}
+                            </div>
+
+                            <div class="text-xs text-gray-400 mt-1">
+                                {{ $item->created_at->format('H:i:s') }} WIB
                             </div>
 
                         </td>
@@ -595,7 +613,7 @@
                     <tr>
 
                         <td
-                            colspan="8"
+                            colspan="9"
                             class="px-5 py-14 text-center"
                         >
 

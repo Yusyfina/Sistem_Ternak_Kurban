@@ -1,4 +1,3 @@
-
 <?php
 
 namespace App\Http\Controllers;
@@ -79,3 +78,5 @@ class OperatorDashboardController extends Controller
         ));
     }
 }
+
+?>
